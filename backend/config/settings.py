@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     # 追加したパッケージ
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist', 
     'corsheaders',
     # 自分で作ったアプリ
     'accounts',
