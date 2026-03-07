@@ -114,3 +114,25 @@ class StampView(APIView):
             # すでにスタンプ済みなら取り消し
             stamp.delete()
             return Response({'message': 'スタンプを取り消しました'}, status=status.HTTP_200_OK)
+
+class WeeklyChartView(APIView):
+    """週間グラフ用データAPI"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        today = timezone.now().date()
+        result = []
+
+        for i in range(6, -1, -1):
+            date = today - timedelta(days=i)
+            total = StudyRecord.objects.filter(
+            user=request.user,
+            study_date=date
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+            result.append({
+                'date': date.strftime('%m/%d'),
+                'minutes': total
+        })
+
+        return Response(result)

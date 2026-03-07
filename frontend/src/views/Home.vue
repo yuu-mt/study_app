@@ -22,6 +22,9 @@
       </div>
     </div>
 
+    <!-- 週間グラフ -->
+<WeeklyChart :weeklyData="weeklyData" />
+
     <!-- カテゴリータブ -->
     <div class="tabs">
       <button
@@ -117,10 +120,12 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import WeeklyChart from '../components/WeeklyChart.vue'
 
 const router = useRouter()
 
 const summary = ref({ weekly_minutes: 0, monthly_minutes: 0, streak_days: 0 })
+const weeklyData = ref([])
 const records = ref([])
 const categories = ref([])
 const activeTab = ref('')
@@ -178,6 +183,18 @@ const fetchSummary = async () => {
     summary.value = res.data
   } catch (error) {
     if (error.response?.status === 401) router.push('/login')
+  }
+}
+
+const fetchWeeklyChart = async () => {
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/study/weekly-chart/', {
+      headers: authHeader()
+    })
+    console.log('週間データ:', res.data)
+    weeklyData.value = res.data
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -246,6 +263,7 @@ onMounted(() => {
   fetchRecords()
   fetchSummary()
   fetchCategories()
+  fetchWeeklyChart()
 })
 </script>
 
