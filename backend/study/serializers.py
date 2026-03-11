@@ -17,12 +17,13 @@ class StudyRecordSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     stamp_count = serializers.SerializerMethodField()
     duration_display = serializers.SerializerMethodField()
+    my_stamp = serializers.SerializerMethodField() 
 
     class Meta:
         model = StudyRecord
         fields = [
             'id', 'user', 'username', 'category', 'category_name','title', 'description', 'study_date', 'duration_minutes',
-            'duration_display', 'stamp_count', 'created_at'
+            'duration_display', 'stamp_count','my_stamp','created_at'
         ]
         read_only_fields = ['user', 'created_at']
 
@@ -41,6 +42,12 @@ class StudyRecordSerializer(serializers.ModelSerializer):
         if hours > 0:
             return f'{hours}時間{minutes}分' if minutes > 0 else f'{hours}時間'
         return f'{minutes}分'
+    
+    def get_my_stamp(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.stamps.filter(from_user=request.user).exists()
+        return False
         
 class StampSerializer(serializers.ModelSerializer):
     class Meta:
