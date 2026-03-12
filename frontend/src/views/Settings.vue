@@ -60,7 +60,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api.js'
 
 const router = useRouter()
 
@@ -75,20 +75,14 @@ const errorMessage = ref('')
 const pwSuccessMessage = ref('')
 const pwErrorMessage = ref('')
 
-const authHeader = () => ({
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`
-})
-
 const fetchProfile = async () => {
-    try {
-        const res = await axios.get('http://127.0.0.1:8000/api/accounts/me/', {
-        headers: authHeader()
-        })
-        username.value = res.data.username
-        email.value = res.data.email
-    } catch (error) {
-        if (error.response?.status === 401) router.push('/login')
-    }
+  try {
+    const res = await api.get('/accounts/me/')
+    username.value = res.data.username
+    email.value = res.data.email
+  } catch (error) {
+    if (error.response?.status === 401) router.push('/login')
+  }
 }
 
 const updateProfile = async () => {
@@ -97,20 +91,19 @@ const updateProfile = async () => {
     isLoading.value = true
 
     try {
-        await axios.patch('http://127.0.0.1:8000/api/accounts/me/', {
+        await api.patch('/accounts/me/', {
         username: username.value,
         email: email.value,
-        }, { headers: authHeader() })
-
+        })
         successMessage.value = 'プロフィールを更新しました'
     } catch (error) {
         errorMessage.value = '更新に失敗しました'
     } finally {
         isLoading.value = false
     }
-}
+    }
 
-const updatePassword = async () => {
+    const updatePassword = async () => {
     pwErrorMessage.value = ''
     pwSuccessMessage.value = ''
 
@@ -125,10 +118,9 @@ const updatePassword = async () => {
 
     isPwLoading.value = true
     try {
-        await axios.patch('http://127.0.0.1:8000/api/accounts/me/', {
+        await api.patch('/accounts/me/', {
         password: newPassword.value,
-        }, { headers: authHeader() })
-
+        })
         pwSuccessMessage.value = 'パスワードを変更しました'
         newPassword.value = ''
         confirmPassword.value = ''
@@ -137,17 +129,17 @@ const updatePassword = async () => {
     } finally {
         isPwLoading.value = false
     }
-}
+    }
 
-const logout = () => {
+    const logout = () => {
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
     router.push('/login')
-}
+    }
 
-onMounted(() => {
+    onMounted(() => {
     fetchProfile()
-})
+    })
 </script>
 
 <style scoped>

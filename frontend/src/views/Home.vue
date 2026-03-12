@@ -129,7 +129,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api.js'
 import WeeklyChart from '../components/WeeklyChart.vue'
 import WeeklyRanking from '../components/WeeklyRanking.vue'
 
@@ -163,9 +163,6 @@ const newRecord = ref({
     minutes: 0,
 })
 
-const authHeader = () => ({
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`
-})
 
 const formatMinutes = (minutes) => {
     const h = Math.floor(minutes / 60)
@@ -176,22 +173,17 @@ const formatMinutes = (minutes) => {
 
 const fetchRecords = async () => {
     try {
-        const params = activeTab.value ? { category: activeTab.value } : {}
-        const res = await axios.get('http://127.0.0.1:8000/api/study/records/', {
-        headers: authHeader(),
-        params
-        })
-        records.value = res.data
-        } catch (error) {
-            if (error.response?.status === 401) router.push('/login')
-        }
+    const params = activeTab.value ? { category: activeTab.value } : {}
+    const res = await api.get('/study/records/', { params })
+    records.value = res.data
+    } catch (error) {
+    if (error.response?.status === 401) router.push('/login')
+    }
 }
 
 const fetchSummary = async () => {
     try {
-        const res = await axios.get('http://127.0.0.1:8000/api/study/summary/', {
-        headers: authHeader()
-        })
+        const res = await api.get('/study/summary/')
         summary.value = res.data
         } catch (error) {
             if (error.response?.status === 401) router.push('/login')
@@ -200,9 +192,7 @@ const fetchSummary = async () => {
 
 const fetchWeeklyChart = async () => {
     try {
-        const res = await axios.get('http://127.0.0.1:8000/api/study/weekly-chart/', {
-        headers: authHeader()
-        })
+        const res = await api.get('/study/weekly-chart/')
         console.log('週間データ:', res.data)
         weeklyData.value = res.data
         } catch (error) {
@@ -212,24 +202,20 @@ const fetchWeeklyChart = async () => {
 
 const fetchRanking = async () => {
     try {
-        const res = await axios.get('http://127.0.0.1:8000/api/study/ranking/', {
-        headers: authHeader()
-        })
-        ranking.value = res.data
-        } catch (error) {
-            console.error(error)
-        }
+    const res = await api.get('/study/ranking/')
+    ranking.value = res.data
+    } catch (error) {
+    console.error(error)
+    }
 }
 
 const fetchCategories = async () => {
     try {
-        const res = await axios.get('http://127.0.0.1:8000/api/study/categories/', {
-        headers: authHeader()
-        })
-        categories.value = res.data
-        } catch (error) {
-            console.error(error)
-        }
+    const res = await api.get('/study/categories/')
+    categories.value = res.data
+    } catch (error) {
+    console.error(error)
+    }
 }
 
 const createRecord = async () => {
@@ -252,13 +238,13 @@ const createRecord = async () => {
 
     isSubmitting.value = true
     try {
-    const response = await axios.post('http://127.0.0.1:8000/api/study/records/', {
-        category: newRecord.value.category,
-        title: newRecord.value.title,
-        description: newRecord.value.description,
-        study_date: newRecord.value.study_date,
-        duration_minutes: duration,
-    }, { headers: authHeader() })
+        await api.post('/study/records/', {
+            category: newRecord.value.category,
+            title: newRecord.value.title,
+            description: newRecord.value.description,
+            study_date: newRecord.value.study_date,
+            duration_minutes: duration,
+        })
 
     console.log('APIレスポンス:', response.data)
 
@@ -278,16 +264,11 @@ const createRecord = async () => {
 
 const toggleStamp = async (record) => {
     try {
-        await axios.post(
-        `http://127.0.0.1:8000/api/study/records/${record.id}/stamp/`,
-        { stamp_type: 'good' },
-        { headers: authHeader() }
-        )
-        // 記録を再取得して表示を更新
+        await api.post(`/study/records/${record.id}/stamp/`, { stamp_type: 'good' })
         fetchRecords()
-        } catch (error) {
-            console.error(error)
-        }
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 const logout = () => {

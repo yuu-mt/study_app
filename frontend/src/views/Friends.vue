@@ -66,7 +66,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from '../api.js'
 
 const router = useRouter()
 
@@ -75,30 +75,23 @@ const searchQuery = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
 
-const authHeader = () => ({
-    Authorization: `Bearer ${localStorage.getItem('access_token')}`
-})
-
 const fetchFriends = async () => {
     try {
-        const res = await axios.get('http://127.0.0.1:8000/api/accounts/friends/', {
-        headers: authHeader()
-        })
+        const res = await api.get('/accounts/friends/')
         friends.value = res.data
     } catch (error) {
         if (error.response?.status === 401) router.push('/login')
     }
-}
+    }
 
-const searchUsers = async () => {
+    const searchUsers = async () => {
     if (!searchQuery.value.trim()) {
         searchResults.value = []
         return
     }
     isSearching.value = true
     try {
-        const res = await axios.get('http://127.0.0.1:8000/api/accounts/search/', {
-        headers: authHeader(),
+        const res = await api.get('/accounts/search/', {
         params: { q: searchQuery.value }
         })
         searchResults.value = res.data
@@ -107,29 +100,24 @@ const searchUsers = async () => {
     } finally {
         isSearching.value = false
     }
-}
+    }
 
-const isFriend = (userId) => {
+    const isFriend = (userId) => {
     return friends.value.some(f => f.id === userId)
-}
+    }
 
-const toggleFriend = async (user) => {
+    const toggleFriend = async (user) => {
     try {
-        await axios.post(
-        `http://127.0.0.1:8000/api/accounts/friends/${user.id}/`,
-        {},
-        { headers: authHeader() }
-        )
-        // 友達一覧を再取得
+        await api.post(`/accounts/friends/${user.id}/`, {})
         fetchFriends()
     } catch (error) {
         console.error(error)
     }
-}
+    }
 
-onMounted(() => {
+    onMounted(() => {
     fetchFriends()
-})
+    })
 </script>
 
 <style scoped>
