@@ -6,6 +6,7 @@ from .views import (
     StudySummaryView,
     StampView,
     WeeklyChartView,
+    WeeklyRankingView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     # スタンプ
     path('records/<int:record_id>/stamp/', StampView.as_view(), name='stamp'),
     path('weekly-chart/', WeeklyChartView.as_view(), name='weekly_chart'),
+    path('ranking/', WeeklyRankingView.as_view(), name='weekly_ranking'),
 ]

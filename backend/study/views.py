@@ -136,3 +136,48 @@ class WeeklyChartView(APIView):
         })
 
         return Response(result)
+    
+class WeeklyRankingView(APIView):
+    """週間学習時間ランキングAPI（友達と自分）"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        from accounts.models import Friendship
+        today = timezone.now().date()
+        week_start = today - timedelta(days=6)
+
+        # 友達のIDリストを取得
+        friend_ids = Friendship.objects.filter(
+            from_user=request.user
+        ).values_list('to_user_id', flat=True)
+
+        # 自分と友達を合わせたユーザーリスト
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        users = User.objects.filter(
+            id__in=list(friend_ids) + [request.user.id]
+        )
+
+        ranking = []
+        for user in users:
+            total = StudyRecord.objects.filter(
+                user=user,
+                study_date__gte=week_start,
+                study_date__lte=today
+            ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+            ranking.append({
+                'user_id': user.id,
+                'username': user.username,
+                'weekly_minutes': total,
+                'is_me': user.id == request.user.id,
+            })
+
+        # 学習時間で降順ソート
+        ranking.sort(key=lambda x: x['weekly_minutes'], reverse=True)
+
+        # 順位を追加
+        for i, item in enumerate(ranking):
+            item['rank'] = i + 1
+
+        return Response(ranking)

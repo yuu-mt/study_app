@@ -28,6 +28,7 @@
 
         <!-- 週間グラフ -->
         <WeeklyChart :weeklyData="weeklyData" />
+        <WeeklyRanking :ranking="ranking" />
 
         <!-- カテゴリータブ -->
         <div class="tabs">
@@ -130,11 +131,13 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import WeeklyChart from '../components/WeeklyChart.vue'
+import WeeklyRanking from '../components/WeeklyRanking.vue'
 
 const router = useRouter()
 
 const summary = ref({ weekly_minutes: 0, monthly_minutes: 0, streak_days: 0 })
 const weeklyData = ref([])
+const ranking = ref([])
 const records = ref([])
 const categories = ref([])
 const activeTab = ref('')
@@ -202,6 +205,17 @@ const fetchWeeklyChart = async () => {
         })
         console.log('週間データ:', res.data)
         weeklyData.value = res.data
+        } catch (error) {
+            console.error(error)
+        }
+}
+
+const fetchRanking = async () => {
+    try {
+        const res = await axios.get('http://127.0.0.1:8000/api/study/ranking/', {
+        headers: authHeader()
+        })
+        ranking.value = res.data
         } catch (error) {
             console.error(error)
         }
@@ -287,6 +301,7 @@ fetchRecords()
 fetchSummary()
 fetchCategories()
 fetchWeeklyChart()
+fetchRanking()
 })
 </script>
 
