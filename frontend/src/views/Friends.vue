@@ -22,7 +22,7 @@
             <div v-if="searchResults.length > 0" class="user-list">
                 <div v-for="user in searchResults" :key="user.id" class="user-card">
                     <div class="user-info">
-                        <div class="avatar">{{ user.username[0] }}</div>
+                        <div class="avatar">{{ user.username ? user.username[0] : '?' }}</div>
                         <div>
                         <div class="username">{{ user.username }}</div>
                         <div class="email">{{ user.email }}</div>
@@ -49,7 +49,7 @@
             </div>
             <div v-for="friend in friends" :key="friend.id" class="user-card">
                 <div class="user-info">
-                    <div class="avatar">{{ friend.username[0] }}</div>
+                    <div class="avatar">{{ friend.username ? friend.username[0] : '?' }}</div>
                     <div>
                         <div class="username">{{ friend.username }}</div>
                         <div class="email">{{ friend.email }}</div>
@@ -78,13 +78,13 @@ const isSearching = ref(false)
 const fetchFriends = async () => {
     try {
         const res = await api.get('/accounts/friends/')
-        friends.value = res.data
+        friends.value = res.data.results.filter(f => f !== null)
     } catch (error) {
         if (error.response?.status === 401) router.push('/login')
     }
-    }
+}
 
-    const searchUsers = async () => {
+const searchUsers = async () => {
     if (!searchQuery.value.trim()) {
         searchResults.value = []
         return
@@ -94,16 +94,16 @@ const fetchFriends = async () => {
         const res = await api.get('/accounts/search/', {
         params: { q: searchQuery.value }
         })
-        searchResults.value = res.data
+        searchResults.value = res.data.results 
     } catch (error) {
         console.error(error)
     } finally {
         isSearching.value = false
     }
-    }
+}
 
-    const isFriend = (userId) => {
-    return friends.value.some(f => f.id === userId)
+const isFriend = (userId) => {
+    return friends.value.some(f => f && f.id === userId)
     }
 
     const toggleFriend = async (user) => {
@@ -113,11 +113,11 @@ const fetchFriends = async () => {
     } catch (error) {
         console.error(error)
     }
-    }
+}
 
-    onMounted(() => {
+onMounted(() => {
     fetchFriends()
-    })
+})
 </script>
 
 <style scoped>

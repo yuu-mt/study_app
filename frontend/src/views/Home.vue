@@ -68,6 +68,25 @@
             </div>
         </div>
 
+        <!-- ページネーション -->
+        <div v-if="totalCount > 0" class="pagination">
+        <button
+            class="page-btn"
+            :disabled="currentPage === 1"
+            @click="changePage(currentPage - 1)"
+        >
+            ← 前へ
+        </button>
+        <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+        <button
+            class="page-btn"
+            :disabled="currentPage === totalPages"
+            @click="changePage(currentPage + 1)"
+        >
+            次へ →
+        </button>
+        </div>
+
         <!-- 新規登録ボタン -->
         <button class="btn-add" @click="showModal = true">＋</button>
 
@@ -127,11 +146,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api.js'
 import WeeklyChart from '../components/WeeklyChart.vue'
 import WeeklyRanking from '../components/WeeklyRanking.vue'
+import { ref, onMounted, computed } from 'vue'
 
 const router = useRouter()
 
@@ -144,6 +163,9 @@ const activeTab = ref('')
 const showModal = ref(false)
 const isSubmitting = ref(false)
 const modalError = ref('')
+const currentPage = ref(1)
+const totalCount = ref(0)
+const totalPages = computed(() => Math.ceil(totalCount.value / 10))
 
 const tabs = [
     { label: 'すべて', value: '' },
@@ -171,14 +193,22 @@ const formatMinutes = (minutes) => {
     return `${m}分`
 }
 
-const fetchRecords = async () => {
+const fetchRecords = async (page = 1) => {
     try {
-    const params = activeTab.value ? { category: activeTab.value } : {}
-    const res = await api.get('/study/records/', { params })
-    records.value = res.data
+        const params = { page }
+        if (activeTab.value) params.category = activeTab.value
+        const res = await api.get('/study/records/', { params })
+        records.value = res.data.results
+        totalCount.value = res.data.count
+        currentPage.value = page
     } catch (error) {
-    if (error.response?.status === 401) router.push('/login')
+        if (error.response?.status === 401) router.push('/login')
     }
+}
+
+const changePage = (page) => {
+    fetchRecords(page)
+    window.scrollTo(0, 0)
 }
 
 const fetchSummary = async () => {
@@ -580,5 +610,37 @@ fetchRanking()
     padding: 6px 10px;
     font-size: 16px;
     cursor: pointer;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+}
+
+.page-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #667eea;
+    background: white;
+    color: #667eea;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.page-btn:disabled {
+    border-color: #ddd;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
 }
 </style>

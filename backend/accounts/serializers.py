@@ -11,13 +11,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'username', 'password']
 
-        def create(self, validated_data):
-            user = User/objects.create_user(
-                email=validated_data['email'],
-                username=validated_data['username'],
-                password=validated_data['password'],
-            )
-            return user
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            password=validated_data['password'],
+        )
+        return user
         
 class UserSerializer(serializers.ModelSerializer):
     """ユーザー情報取得用シリアライザー"""
@@ -26,19 +26,19 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'username', 'avatar', 'created_at']
         read_only_fields = ['id', 'created_at']
 
-"""ユーザー情報取得・更新用シリアライザー"""
-password = serializers.CharField(write_only=True, min_length=8, required=False)
+    """ユーザー情報取得・更新用シリアライザー"""
+    password = serializers.CharField(write_only=True, min_length=8, required=False)
 
-class Meta:
-    model = User
-    fields = ['id', 'email', 'username', 'avatar', 'created_at', 'password']
-    read_only_fields = ['id', 'created_at']
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'username', 'avatar', 'created_at', 'password']
+        read_only_fields = ['id', 'created_at']
 
-def update(self, instance, validated_data):
-    password = validated_data.pop('password', None)
-    for attr, value in validated_data.items():
-        setattr(instance, attr, value)
-    if password:
-        instance.set_password(password)
-    instance.save()
-    return instance
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
