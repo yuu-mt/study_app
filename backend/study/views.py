@@ -181,3 +181,81 @@ class WeeklyRankingView(APIView):
             item['rank'] = i + 1
 
         return Response(ranking)
+    
+class FriendRecordListView(generics.ListAPIView):
+    """友達の学習記録一覧取得API"""
+    serializer_class = StudyRecordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        from accounts.models import Friendship
+        user_id = self.kwargs['user_id']
+
+        # 友達かどうか確認
+        is_friend = Friendship.objects.filter(
+            from_user=self.request.user,
+            to_user_id=user_id
+        ).exists()
+
+        if not is_friend:
+            return StudyRecord.objects.none()
+        
+        return StudyRecord.objects.filter(
+            user_id=user_id
+        ).order_by('-study_date')
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
+class FriendSummaryView(APIView):
+    """友達の学習集計API"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, user_id):
+        from accounts.models import Friendship
+        # 友達かどうか確認
+        is_friend = Friendship.objects.filter(
+            from_user=request.user,
+            to_user_id=user_id
+        ).exists()
+
+        if not is_friend:
+            return Response({'error': '友達ではありません'}, status=status.HTTP_403_FORBIDDEN)
+
+        today = timezone.now().date()
+        week_start = today - timedelta(days=6)
+        month_start = today.replace(day=1)
+
+        weekly = StudyRecord.objects.filter(
+            user_id=user_id,
+            study_date__gte=week_start,
+            study_date__lte=today
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        monthly = StudyRecord.objects.filter(
+            user_id=user_id,
+            study_date__gte=month_start,
+            study_date__lte=today
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        # 連続学習日数
+        streak = 0
+        check_date = today
+        while True:
+            exists = StudyRecord.objects.filter(
+                user_id=user_id,
+                study_date=check_date
+            ).exists()
+            if exists:
+                streak += 1
+                check_date -= timedelta(days=1)
+            else:
+                break
+
+        return Response({
+            'weekly_minutes': weekly,
+            'monthly_minutes': monthly,
+            'streak_days': streak,
+        })

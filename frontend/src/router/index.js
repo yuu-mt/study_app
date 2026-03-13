@@ -4,6 +4,7 @@ import Register from '../views/Register.vue'
 import Home from '../views/Home.vue'
 import Friends from '../views/Friends.vue'
 import Settings from '../views/Settings.vue'
+import FriendHome from '../views/FriendHome.vue'
 
 const routes = [
     { path: '/', redirect: '/login' },
@@ -12,6 +13,7 @@ const routes = [
     { path: '/home', name: 'Home', component: Home, meta: { requiresAuth: true } },
     { path: '/friends', name: 'Friends', component: Friends, meta: { requiresAuth: true } },
     { path: '/settings', name: 'Settings', component: Settings, meta: { requiresAuth: true } },
+    { path: '/friends/:id', name: 'FriendHome', component: FriendHome, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({

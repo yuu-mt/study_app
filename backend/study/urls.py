@@ -7,6 +7,8 @@ from .views import (
     StampView,
     WeeklyChartView,
     WeeklyRankingView,
+    FriendRecordListView,
+    FriendSummaryView,
 )
 
 urlpatterns = [
@@ -14,6 +16,8 @@ urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='categories'),
     # 学習記録一覧・新規作成
     path('records/', StudyRecordListCreateView.as_view(), name='study_records'),
+    path('friends/<int:user_id>/records/', FriendRecordListView.as_view(), name='friend_records'),
+    path('friends/<int:user_id>/summary/', FriendSummaryView.as_view(), name='friend_summary'),
     # 学習記録詳細・更新・削除
     path('records/<int:pk>/', StudyRecordDetailView.as_view(), name='study_record_detail'),
     # 学習時間集計
