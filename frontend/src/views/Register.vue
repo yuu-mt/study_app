@@ -1,58 +1,36 @@
 <template>
-  <div class="auth-container">
-    <div class="auth-card">
-      <!-- ロゴ・タイトル -->
-      <div class="auth-header">
-        <div class="logo">📚</div>
-        <h1>StudyTracker</h1>
-        <p>新規アカウント登録</p>
-      </div>
+  <div class="register-container">
+    <div class="logo">
+      <h1>📚 StudyTracker</h1>
+      <p>アカウントを作成して始めよう</p>
+    </div>
 
-      <!-- エラーメッセージ -->
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-
-      <!-- 成功メッセージ -->
-      <div v-if="successMessage" class="success-message">
-        {{ successMessage }}
-      </div>
-
+    <div class="card">
       <div class="form-group">
         <label>ユーザー名</label>
-        <input
-          v-model="username"
-          type="text"
-          placeholder="ユーザー名を入力"
-        />
+        <input v-model="username" type="text" placeholder="ユーザー名を入力" />
       </div>
 
       <div class="form-group">
         <label>メールアドレス</label>
-        <input
-          v-model="email"
-          type="email"
-          placeholder="example@email.com"
-        />
+        <input v-model="email" type="email" placeholder="example@email.com" />
       </div>
 
       <div class="form-group">
         <label>パスワード（8文字以上）</label>
-        <input
-          v-model="password"
-          type="password"
-          placeholder="パスワードを入力"
-        />
+        <input v-model="password" type="password" placeholder="パスワードを入力" />
       </div>
 
-      <button class="btn-primary" @click="register" :disabled="isLoading">
-        {{ isLoading ? '登録中...' : 'アカウント登録' }}
+      <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+      <button class="btn-register" @click="register" :disabled="isLoading">
+        {{ isLoading ? '登録中...' : '新規登録' }}
       </button>
 
-      <p class="auth-link">
+      <div class="login-link">
         すでにアカウントをお持ちの方は
-        <RouterLink to="/login">ログイン</RouterLink>
-      </p>
+        <a @click="router.push('/login')">ログイン</a>
+      </div>
     </div>
   </div>
 </template>
@@ -105,45 +83,41 @@ const register = async () => {
 </script>
 
 <style scoped>
-.auth-container {
+.register-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  background: #f8faff;
+  padding: 24px;
 }
 
-.auth-card {
-  background: white;
-  border-radius: 20px;
-  padding: 40px 32px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-}
-
-.auth-header {
+.logo {
   text-align: center;
   margin-bottom: 32px;
 }
 
-.logo {
-  font-size: 48px;
-  margin-bottom: 8px;
+.logo h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 6px;
 }
 
-.auth-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a1a2e;
-  margin: 0 0 4px 0;
-}
-
-.auth-header p {
-  color: #888;
+.logo p {
   font-size: 14px;
-  margin: 0;
+  color: #64748b;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
 }
 
 .form-group {
@@ -152,76 +126,66 @@ const register = async () => {
 
 .form-group label {
   display: block;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #444;
+  color: #374151;
   margin-bottom: 6px;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #e8e8e8;
+  padding: 12px 14px;
+  border: 1.5px solid #e2e8f0;
   border-radius: 10px;
-  font-size: 16px;
+  font-size: 15px;
   outline: none;
-  transition: border-color 0.2s;
   box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
 .form-group input:focus {
-  border-color: #667eea;
-}
-
-.btn-primary {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: opacity 0.2s;
-}
-
-.btn-primary:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+  border-color: #2563eb;
 }
 
 .error-message {
-  background: #fff0f0;
-  border: 1px solid #ffcccc;
-  color: #e53e3e;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
   padding: 10px 14px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   margin-bottom: 16px;
 }
 
-.success-message {
-  background: #f0fff4;
-  border: 1px solid #9ae6b4;
-  color: #276749;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 14px;
-  margin-bottom: 16px;
+.btn-register {
+  width: 100%;
+  padding: 13px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.auth-link {
+.btn-register:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-link {
   text-align: center;
-  font-size: 14px;
-  color: #888;
   margin-top: 20px;
+  font-size: 13px;
+  color: #64748b;
 }
 
-.auth-link a {
-  color: #667eea;
+.login-link a {
+  color: #2563eb;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 }
 </style>

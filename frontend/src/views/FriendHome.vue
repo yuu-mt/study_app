@@ -160,191 +160,202 @@ onMounted(() => {
 
 <style scoped>
 .home-container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 16px;
-    background: #f5f7fa;
-    min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #2563eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header h1 {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
 }
 
 .btn-back {
-    background: none;
-    border: none;
-    color: #667eea;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0;
-    white-space: nowrap;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 20px 16px 0;
 }
 
 .card {
-    background: white;
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background: #f8faff;
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  border: 1px solid #e2eaff;
 }
 
 .card-label {
-    font-size: 10px;
-    color: #888;
-    margin-bottom: 4px;
+  font-size: 10px;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 500;
 }
 
 .card-value {
-    font-size: 16px;
-    font-weight: 700;
-    color: #667eea;
+  font-size: 18px;
+  font-weight: 700;
+  color: #2563eb;
 }
 
 .tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    overflow-x: auto;
+  display: flex;
+  gap: 8px;
+  padding: 16px 16px 0;
+  overflow-x: auto;
 }
 
 .tab-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    background: white;
-    color: #888;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8faff;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
 }
 
 .tab-btn.active {
-    background: #667eea;
-    border-color: #667eea;
-    color: white;
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
 }
 
 .record-card {
-    display: block;
-    background: white;
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 16px 0;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .record-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
 .record-category {
-    font-size: 11px;
-    color: #888;
-    font-weight: 600;
+  font-size: 11px;
+  color: #2563eb;
+  font-weight: 700;
+  background: #eff6ff;
+  padding: 2px 8px;
+  border-radius: 10px;
 }
 
 .record-date {
-    font-size: 11px;
-    color: #aaa;
+  font-size: 11px;
+  color: #94a3b8;
 }
 
 .record-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
 }
 
 .record-desc {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 8px;
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 8px;
 }
 
 .record-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
 }
 
 .record-duration {
-    font-size: 12px;
-    color: #888;
+  font-size: 12px;
+  color: #64748b;
 }
 
 .stamp-btn {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    color: #888;
-    transition: all 0.2s;
+  background: none;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
 }
 
 .stamp-btn.stamped {
-    background: #fff0f0;
-    border-color: #ffcccc;
-    color: #e53e3e;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #2563eb;
 }
 
 .empty {
-    text-align: center;
-    color: #aaa;
-    padding: 40px 0;
-    font-size: 14px;
+  text-align: center;
+  color: #94a3b8;
+  padding: 40px 0;
+  font-size: 14px;
 }
 
 .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0;
 }
 
 .page-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid #667eea;
-    background: white;
-    color: #667eea;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #2563eb;
+  background: white;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .page-btn:disabled {
-    border-color: #ddd;
-    color: #aaa;
-    cursor: not-allowed;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
 }
 
 .page-info {
-    font-size: 13px;
-    color: #888;
-    font-weight: 600;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 600;
 }
 </style>

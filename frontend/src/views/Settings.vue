@@ -144,125 +144,132 @@ const updateProfile = async () => {
 
 <style scoped>
 .settings-container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 16px;
-    background: #f5f7fa;
-    min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #2563eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
 }
 
 .btn-back {
-    background: none;
-    border: none;
-    color: #667eea;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .section {
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 16px 0;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .section h3 {
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-    margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 16px 0;
 }
 
 .form-group {
-    margin-bottom: 14px;
+  margin-bottom: 14px;
 }
 
 .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #444;
-    margin-bottom: 6px;
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
 }
 
 .form-group input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 2px solid #e8e8e8;
-    border-radius: 10px;
-    font-size: 15px;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
 }
 
 .form-group input:focus {
-    border-color: #667eea;
+  border-color: #2563eb;
 }
 
 .btn-primary {
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
 .btn-primary:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-logout {
-    width: 100%;
-    padding: 12px;
-    background: white;
-    color: #e53e3e;
-    border: 1px solid #ffcccc;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
+  width: 100%;
+  padding: 12px;
+  background: white;
+  color: #dc2626;
+  border: 1.5px solid #fecaca;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .success-message {
-    background: #f0fff4;
-    border: 1px solid #9ae6b4;
-    color: #276749;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
 }
 
 .error-message {
-    background: #fff0f0;
-    border: 1px solid #ffcccc;
-    color: #e53e3e;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
 }
 </style>

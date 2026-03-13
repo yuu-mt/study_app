@@ -168,221 +168,167 @@ const toggleStamp = async (record) => {
 
 <style scoped>
 .friends-container {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 16px;
-    background: #f5f7fa;
-    min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 80px;
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #2563eb;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
 }
 
 .btn-back {
-    background: none;
-    border: none;
-    color: #667eea;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .search-section, .friends-section {
-    background: white;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 16px 0;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .search-section h3, .friends-section h3 {
-    font-size: 14px;
-    font-weight: 600;
-    color: #444;
-    margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 12px 0;
 }
 
 .search-box input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 2px solid #e8e8e8;
-    border-radius: 10px;
-    font-size: 15px;
-    outline: none;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
 }
 
 .search-box input:focus {
-    border-color: #667eea;
+  border-color: #2563eb;
 }
 
 .user-list {
-    margin-top: 12px;
+  margin-top: 12px;
 }
 
 .user-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .user-card:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 700;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .username {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a1a2e;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
 }
 
 .email {
-    font-size: 12px;
-    color: #aaa;
+  font-size: 12px;
+  color: #94a3b8;
 }
 
 .btn-friend {
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid #667eea;
-    background: white;
-    color: #667eea;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid #2563eb;
+  background: white;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .btn-friend.following {
-    background: #667eea;
-    color: white;
-}
-
-.empty {
-    text-align: center;
-    color: #aaa;
-    padding: 20px 0;
-    font-size: 14px;
-}
-
-.friend-block {
-    margin-bottom: 8px;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.friend-block:last-child {
-    border-bottom: none;
-}
-
-.friend-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  background: #2563eb;
+  color: white;
 }
 
 .btn-records {
-    padding: 6px 10px;
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    background: white;
-    color: #555;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-.friend-records {
-    padding: 8px 0 8px 48px;
+.friend-block {
+  margin-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
-.record-card {
-    background: #f9f9f9;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 8px;
+.friend-block:last-child {
+  border-bottom: none;
 }
 
-.record-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 4px;
+.friend-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
-.record-category {
-    font-size: 11px;
-    color: #888;
-    font-weight: 600;
+.empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 20px 0;
+  font-size: 14px;
 }
 
-.record-date {
-    font-size: 11px;
-    color: #aaa;
-}
-
-.record-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a1a2e;
-    margin-bottom: 6px;
-}
-
-.record-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.record-duration {
-    font-size: 12px;
-    color: #888;
-}
-
-.stamp-btn {
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-size: 12px;
-    cursor: pointer;
-    color: #888;
-    transition: all 0.2s;
-}
-
-.stamp-btn.stamped {
-    background: #fff0f0;
-    border-color: #ffcccc;
-    color: #e53e3e;
-}
 </style>

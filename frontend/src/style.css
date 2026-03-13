@@ -7,12 +7,11 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-  background: #f5f7fa;
-  color: #1a1a2e;
+  background: #ffffff;
+  color: #1e293b;
   -webkit-font-smoothing: antialiased;
 }
 
-/* スクロールバーを細く */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -22,17 +21,15 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ddd;
+  background: #cbd5e1;
   border-radius: 2px;
 }
 
-/* タップ時のハイライトを消す */
 button, input, select, textarea {
   -webkit-appearance: none;
   font-family: inherit;
 }
 
-/* iOSのズームを防ぐ（16px以上に設定） */
 input, select, textarea {
   font-size: 16px !important;
 }
