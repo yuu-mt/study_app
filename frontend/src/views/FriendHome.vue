@@ -22,6 +22,9 @@
             </div>
         </div>
 
+        <!-- モンスター -->
+        <MonsterCard :totalMinutes="summary.monthly_minutes" />
+
         <!-- カテゴリータブ -->
         <div class="tabs">
             <button
@@ -80,6 +83,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import api from '../api.js'
+import MonsterCard from '../components/MonsterCard.vue'
 
 const router = useRouter()
 const route = useRoute()

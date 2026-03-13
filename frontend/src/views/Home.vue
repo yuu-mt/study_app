@@ -28,8 +28,8 @@
 
         <!-- 週間グラフ -->
         <WeeklyChart :weeklyData="weeklyData" />
-        <WeeklyRanking :ranking="ranking" />
-
+        <!-- モンスター -->
+        <MonsterCard :totalMinutes="summary.monthly_minutes" />
         <!-- カテゴリータブ -->
         <div class="tabs">
             <button
@@ -145,14 +145,14 @@
 import { useRouter } from 'vue-router'
 import api from '../api.js'
 import WeeklyChart from '../components/WeeklyChart.vue'
-import WeeklyRanking from '../components/WeeklyRanking.vue'
+import MonsterCard from '../components/MonsterCard.vue'
 import { ref, onMounted, computed } from 'vue'
+
 
 const router = useRouter()
 
 const summary = ref({ weekly_minutes: 0, monthly_minutes: 0, streak_days: 0 })
 const weeklyData = ref([])
-const ranking = ref([])
 const records = ref([])
 const categories = ref([])
 const activeTab = ref('')
@@ -224,15 +224,6 @@ const fetchWeeklyChart = async () => {
         } catch (error) {
             console.error(error)
         }
-}
-
-const fetchRanking = async () => {
-    try {
-    const res = await api.get('/study/ranking/')
-    ranking.value = res.data
-    } catch (error) {
-    console.error(error)
-    }
 }
 
 const fetchCategories = async () => {
@@ -307,7 +298,6 @@ fetchRecords()
 fetchSummary()
 fetchCategories()
 fetchWeeklyChart()
-fetchRanking()
 })
 </script>
 
