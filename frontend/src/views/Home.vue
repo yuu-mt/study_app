@@ -241,10 +241,10 @@ const fetchRanking = async () => {
 
 const fetchCategories = async () => {
     try {
-    const res = await api.get('/study/categories/')
-    categories.value = res.data
+        const res = await api.get('/study/categories/')
+        categories.value = res.data.results
     } catch (error) {
-    console.error(error)
+        console.error(error)
     }
 }
 
@@ -260,7 +260,7 @@ const createRecord = async () => {
         return
     }
 
-  const duration = Number(newRecord.value.hours) * 60 + Number(newRecord.value.minutes)
+    const duration = Number(newRecord.value.hours) * 60 + Number(newRecord.value.minutes)
     if (duration === 0) {
         modalError.value = '学習時間を入力してください'
         return
@@ -269,23 +269,22 @@ const createRecord = async () => {
     isSubmitting.value = true
     try {
         await api.post('/study/records/', {
-            category: newRecord.value.category,
-            title: newRecord.value.title,
-            description: newRecord.value.description,
-            study_date: newRecord.value.study_date,
-            duration_minutes: duration,
+        category: Number(newRecord.value.category),
+        title: newRecord.value.title,
+        description: newRecord.value.description,
+        study_date: newRecord.value.study_date,
+        duration_minutes: duration,
         })
 
-    console.log('APIレスポンス:', response.data)
-
-    showModal.value = false
-    newRecord.value = {
+        showModal.value = false
+        newRecord.value = {
         category: '', title: '', description: '',
         study_date: today, hours: 1, minutes: 0
-    }
-    fetchRecords()
-    fetchSummary()
+        }
+        fetchRecords(1)
+        fetchSummary()
     } catch (error) {
+        console.error('保存エラー:', error.response?.data)
         modalError.value = '保存に失敗しました'
     } finally {
         isSubmitting.value = false
