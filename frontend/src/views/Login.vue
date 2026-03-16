@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="logo">
       <h1>📚 StudyTracker</h1>
-      <p>学習を記録して、友達と競おう</p>
+      <p>学習を記録して、ドラゴンを育てよう</p>
     </div>
 
     <div class="card">
