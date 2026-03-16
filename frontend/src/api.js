@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from './router/index.js'
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api'
+    baseURL: 'studyapp-production-0881.up.railway.app'
 })
 
 // リクエストインターセプター
