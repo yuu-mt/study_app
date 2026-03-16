@@ -39,6 +39,7 @@
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import axios from 'axios'
+import { authApi } from '../api.js'
 
 const router = useRouter()
 
@@ -55,7 +56,7 @@ const register = async () => {
   isLoading.value = true
 
   try {
-    await axios.post('http://127.0.0.1:8000/api/accounts/register/', {
+    await authApi.post('/accounts/register/', {
       username: username.value,
       email: email.value,
       password: password.value

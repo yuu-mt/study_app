@@ -32,38 +32,32 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
+import { authApi } from '../api.js'
 
 const router = useRouter()
-
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 const isLoading = ref(false)
 
 const login = async () => {
-  errorMessage.value = ''
-  isLoading.value = true
-
-  try {
-    const response = await axios.post('http://127.0.0.1:8000/api/accounts/login/', {
-      email: email.value,
-      password: password.value
-    })
-
-    // トークンをlocalStorageに保存
-    localStorage.setItem('access_token', response.data.access)
-    localStorage.setItem('refresh_token', response.data.refresh)
-
-    // トップページへ遷移（後で作る）
-    router.push('/home')
-
-  } catch (error) {
-    errorMessage.value = 'メールアドレスまたはパスワードが違います'
-  } finally {
-    isLoading.value = false
-  }
+    errorMessage.value = ''
+    isLoading.value = true
+    try {
+      
+      const res = await authApi.post('/accounts/login/',
+        { email: email.value, password: password.value }
+      )
+      localStorage.setItem('access_token', res.data.access)
+      localStorage.setItem('refresh_token', res.data.refresh)
+      router.push('/home')
+    } catch (error) {
+      errorMessage.value = 'メールアドレスまたはパスワードが正しくありません'
+    } finally {
+      isLoading.value = false
+    }
 }
 </script>
 

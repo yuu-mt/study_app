@@ -51,3 +51,6 @@ api.interceptors.response.use(
 )
 
 export default api
+export const authApi = axios.create({
+    baseURL: 'https://studyapp-production-0881.up.railway.app/api',
+})
