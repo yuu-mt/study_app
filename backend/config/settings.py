@@ -106,24 +106,25 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',  # Viteのデフォルトポート
 ]
 
+# WhiteNoise
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+
+
 # 本番環境の設定
-if os.environ.get('RAILWAY_ENVIRONMENT'):
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
     DEBUG = False
     ALLOWED_HOSTS = ['*']
 
-    # データベース
     DATABASES = {
         'default': dj_database_url.config(
+            default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
     }
 
-    # 静的ファイル
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-    # WhiteNoise
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-
-    STATIC_ROOT = BASE_DIR / 'staticfiles'
-    STATIC_URL = '/static/'
