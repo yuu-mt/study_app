@@ -129,3 +129,10 @@ if DATABASE_URL:
     }
 
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        "https://study-app-seven-rho.vercel.app",
+    ]
+    
+    CORS_ALLOW_ALL_ORIGINS = True
