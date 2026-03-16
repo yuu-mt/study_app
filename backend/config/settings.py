@@ -103,7 +103,8 @@ SIMPLE_JWT = {
 
 # CORS設定（VueからDjangoへのアクセスを許可）
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # Viteのデフォルトポート
+    "http://localhost:5173",
+    "https://study-app-seven-rho.vercel.app",
 ]
 
 # WhiteNoise
