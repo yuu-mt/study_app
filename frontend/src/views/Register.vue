@@ -38,7 +38,6 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import axios from 'axios'
 import { authApi } from '../api.js'
 
 const router = useRouter()
