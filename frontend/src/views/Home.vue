@@ -87,7 +87,7 @@
         </button>
         </div>
 
-        <!-- 新規登録ボタン -->
+         <!-- 新規登録ボタン -->
         <button class="btn-add" @click="showModal = true">＋</button>
 
         <!-- 新規登録モーダル -->
@@ -141,45 +141,46 @@
                     </button>
                 </div>
             </div>
+        </div>
 
-            <!-- 編集モーダル -->
-            <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
-                <div class="modal">
-                    <h2>学習記録を編集</h2>
+        <!-- 編集モーダル -->
+        <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
+            <div class="modal">
+                <h2>学習記録を編集</h2>
 
-                    <div class="form-group">
-                        <label>カテゴリー</label>
-                        <select v-model="editRecord.category">
-                            <option value="">選択してください</option>
-                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                            {{ cat.get_name_display }}
-                            </option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label>カテゴリー</label>
+                    <select v-model="editRecord.category">
+                        <option value="">選択してください</option>
+                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                        {{ cat.get_name_display }}
+                        </option>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label>学習タイトル</label>
-                        <input v-model="editRecord.title" type="text" />
-                    </div>
+                <div class="form-group">
+                    <label>学習タイトル</label>
+                    <input v-model="editRecord.title" type="text" />
+                </div>
 
-                    <div class="form-group">
-                        <label>学習内容（任意）</label>
-                        <textarea v-model="editRecord.description"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label>学習内容（任意）</label>
+                    <textarea v-model="editRecord.description"></textarea>
+                </div>
 
-                    <div class="form-group">
-                        <label>学習日</label>
-                        <input v-model="editRecord.study_date" type="date" />
-                    </div>
+                <div class="form-group">
+                    <label>学習日</label>
+                    <input v-model="editRecord.study_date" type="date" />
+                </div>
 
-                    <div class="form-group">
+                <div class="form-group">
                     <label>学習時間</label>
                     <div class="time-inputs">
                         <select v-model="editRecord.hours">
-                        <option v-for="h in 24" :key="h-1" :value="h-1">{{ h-1 }}時間</option>
+                            <option v-for="h in 24" :key="h-1" :value="h-1">{{ h-1 }}時間</option>
                         </select>
                         <select v-model="editRecord.minutes">
-                        <option v-for="m in [0,10,15,20,30,45]" :key="m" :value="m">{{ m }}分</option>
+                            <option v-for="m in [0,10,15,20,30,45]" :key="m" :value="m">{{ m }}分</option>
                         </select>
                     </div>
                 </div>
@@ -187,12 +188,11 @@
                 <div v-if="editError" class="error-message">{{ editError }}</div>
 
                 <div class="modal-actions">
-                <button class="btn-cancel" @click="showEditModal = false">キャンセル</button>
-                <button class="btn-submit" @click="updateRecord" :disabled="isSubmitting">
-                    {{ isSubmitting ? '保存中...' : '保存する' }}
-                </button>
+                    <button class="btn-cancel" @click="showEditModal = false">キャンセル</button>
+                    <button class="btn-submit" @click="updateRecord" :disabled="isSubmitting">
+                        {{ isSubmitting ? '保存中...' : '保存する' }}
+                    </button>
                 </div>
-            </div>
             </div>
         </div>
     </div>
