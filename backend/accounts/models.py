@@ -34,6 +34,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         default='slime',
         choices=[('slime', 'スライム'), ('dragon', 'ドラゴン'), ('dino', '恐竜')]
     )
+  
+  objects = UserManager()
 
   USERNAME_FIELD = 'email'
   REQUIRED_FIELDS = ['username']
