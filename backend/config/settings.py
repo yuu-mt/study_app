@@ -118,7 +118,6 @@ STATIC_URL = '/static/'
 # 本番環境の設定
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
-    DEBUG = False
     ALLOWED_HOSTS = ['*']
 
     DATABASES = {
