@@ -59,7 +59,11 @@
                 </div>
                 <div class="record-footer">
                     <span class="record-duration">⏱ {{ record.duration_display }}</span>
-                    <span class="stamp-count">👍 {{ record.stamp_count }}</span>
+                    <div class="record-actions">
+                        <span class="stamp-count">👍 {{ record.stamp_count }}</span>
+                        <button class="btn-edit" @click="openEditModal(record)">✏️</button>
+                        <button class="btn-delete" @click="deleteRecord(record)">🗑️</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,6 +141,59 @@
                     </button>
                 </div>
             </div>
+
+            <!-- 編集モーダル -->
+            <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
+                <div class="modal">
+                    <h2>学習記録を編集</h2>
+
+                    <div class="form-group">
+                        <label>カテゴリー</label>
+                        <select v-model="editRecord.category">
+                            <option value="">選択してください</option>
+                            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                            {{ cat.get_name_display }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>学習タイトル</label>
+                        <input v-model="editRecord.title" type="text" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>学習内容（任意）</label>
+                        <textarea v-model="editRecord.description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>学習日</label>
+                        <input v-model="editRecord.study_date" type="date" />
+                    </div>
+
+                    <div class="form-group">
+                    <label>学習時間</label>
+                    <div class="time-inputs">
+                        <select v-model="editRecord.hours">
+                        <option v-for="h in 24" :key="h-1" :value="h-1">{{ h-1 }}時間</option>
+                        </select>
+                        <select v-model="editRecord.minutes">
+                        <option v-for="m in [0,10,15,20,30,45]" :key="m" :value="m">{{ m }}分</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div v-if="editError" class="error-message">{{ editError }}</div>
+
+                <div class="modal-actions">
+                <button class="btn-cancel" @click="showEditModal = false">キャンセル</button>
+                <button class="btn-submit" @click="updateRecord" :disabled="isSubmitting">
+                    {{ isSubmitting ? '保存中...' : '保存する' }}
+                </button>
+                </div>
+            </div>
+            </div>
         </div>
     </div>
 </template>
@@ -181,6 +238,17 @@ const newRecord = ref({
     minutes: 0,
 })
 
+const showEditModal = ref(false)
+const editError = ref('')
+const editRecord = ref({
+    id: null,
+    category: '',
+    title: '',
+    description: '',
+    study_date: '',
+    hours: 1,
+    minutes: 0,
+})
 
 const formatMinutes = (minutes) => {
     const h = Math.floor(minutes / 60)
@@ -292,6 +360,58 @@ const logout = () => {
 localStorage.removeItem('access_token')
 localStorage.removeItem('refresh_token')
 router.push('/login')
+}
+
+const openEditModal = (record) => {
+    editRecord.value = {
+        id: record.id,
+        category: record.category,
+        title: record.title,
+        description: record.description,
+        study_date: record.study_date,
+        hours: Math.floor(record.duration_minutes / 60),
+        minutes: record.duration_minutes % 60,
+    }
+    showEditModal.value = true
+}
+
+const updateRecord = async () => {
+    editError.value = ''
+    const duration = Number(editRecord.value.hours) * 60 + Number(editRecord.value.minutes)
+    if (!editRecord.value.title) {
+        editError.value = 'タイトルを入力してください'
+        return
+    }
+    isSubmitting.value = true
+    try {
+        await api.patch(`/study/records/${editRecord.value.id}/`, {
+        category: Number(editRecord.value.category),
+        title: editRecord.value.title,
+        description: editRecord.value.description,
+        study_date: editRecord.value.study_date,
+        duration_minutes: duration,
+        })
+        showEditModal.value = false
+        fetchRecords(currentPage.value)
+        fetchSummary()
+        fetchWeeklyChart()
+    } catch (error) {
+        editError.value = '更新に失敗しました'
+    } finally {
+        isSubmitting.value = false
+    }
+}
+
+const deleteRecord = async (record) => {
+    if (!confirm(`「${record.title}」を削除しますか？`)) return
+    try {
+        await api.delete(`/study/records/${record.id}/`)
+        fetchRecords(currentPage.value)
+        fetchSummary()
+        fetchWeeklyChart()
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 onMounted(() => {
@@ -642,5 +762,29 @@ fetchWeeklyChart()
     font-size: 13px;
     color: #64748b;
     font-weight: 600;
+}
+
+.record-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-edit {
+    background: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.btn-delete {
+    background: none;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
 }
 </style>
