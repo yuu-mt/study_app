@@ -130,12 +130,19 @@
 
                 <div v-if="modalError" class="error-message">{{ modalError }}</div>
 
-                <div class="modal-buttons">
+                <div class="modal-actions">
                     <button class="btn-cancel" @click="showModal = false">キャンセル</button>
-                    <button class="btn-primary" @click="createRecord" :disabled="isSubmitting">
-                    {{ isSubmitting ? '保存中...' : '保存する' }}
+                    <button class="btn-submit" @click="createRecord" :disabled="isSubmitting">
+                        {{ isSubmitting ? '保存中...' : '保存する' }}
                     </button>
                 </div>
+保存してGitHubにプッシュしてください：
+bashcd ~/study_app
+git add .
+git commit -m "Fix modal button style"
+git push origin main
+完了したらWeeklyChart.vueも見せてください 👇
+
             </div>
         </div>
     </div>
