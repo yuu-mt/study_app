@@ -136,13 +136,6 @@
                         {{ isSubmitting ? '保存中...' : '保存する' }}
                     </button>
                 </div>
-保存してGitHubにプッシュしてください：
-bashcd ~/study_app
-git add .
-git commit -m "Fix modal button style"
-git push origin main
-完了したらWeeklyChart.vueも見せてください 👇
-
             </div>
         </div>
     </div>
