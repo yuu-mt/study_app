@@ -5,6 +5,8 @@ import Home from '../views/Home.vue'
 import Friends from '../views/Friends.vue'
 import Settings from '../views/Settings.vue'
 import FriendHome from '../views/FriendHome.vue'
+import ForgotPassword from '../views/ForgotPassword.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 
 const routes = [
     { path: '/', redirect: '/login' },
@@ -14,6 +16,8 @@ const routes = [
     { path: '/friends', name: 'Friends', component: Friends, meta: { requiresAuth: true } },
     { path: '/settings', name: 'Settings', component: Settings, meta: { requiresAuth: true } },
     { path: '/friends/:id', name: 'FriendHome', component: FriendHome, meta: { requiresAuth: true } },
+    { path: '/forgot-password', name: 'ForgotPassword', component: ForgotPassword, meta: { guest: true } },
+    { path: '/reset-password', name: 'ResetPassword', component: ResetPassword, meta: { guest: true } },
 ]
 
 const router = createRouter({

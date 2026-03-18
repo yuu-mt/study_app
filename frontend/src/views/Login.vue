@@ -26,6 +26,11 @@
         アカウントをお持ちでない方は
         <a @click="router.push('/register')">新規登録</a>
       </div>
+      <div class="register-link" style="margin-top: 8px">
+        パスワードをお忘れの方は
+        <a @click="router.push('/forgot-password')">こちら</a>
+      </div>
+
     </div>
   </div>
 </template>
@@ -33,7 +38,6 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import { authApi } from '../api.js'
 
 const router = useRouter()
