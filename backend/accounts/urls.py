@@ -1,6 +1,11 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import RegisterView, UserDetailView, LogoutView, FriendListView, FriendRequestView, UserSearchView
+from .views import (
+    RegisterView, UserDetailView, LogoutView,
+    FriendListView, FriendRequestView, UserSearchView,
+    PasswordResetRequestView, PasswordResetConfirmView
+)
 
 urlpatterns = [
     #新規登録
@@ -20,4 +25,7 @@ urlpatterns = [
     path('friends/<int:user_id>/', FriendRequestView.as_view(), name='friend_request'),
     # ユーザー検索
     path('search/', UserSearchView.as_view(), name='user_search'),
+    # パスワードリセット
+    path('password-reset/', PasswordResetRequestView.as_view(), name='password_reset'),
+    path('password-reset/confirm/', PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
 ]

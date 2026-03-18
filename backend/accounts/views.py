@@ -6,6 +6,10 @@ from django.contrib.auth import get_user_model
 from .serializers import UserRegisterSerializer, UserSerializer
 from .models import Friendship
 from django.contrib.auth import get_user_model
+import resend
+import os
+from .tokens import generate_reset_token, is_token_valid
+from .models import PasswordResetToken
 
 User = get_user_model()
 
@@ -85,3 +89,77 @@ class UserSearchView(generics.ListAPIView):
                 username__icontains=query
             ).exclude(id=self.request.user.id)
         return User.objects.none()
+    
+class PasswordResetRequestView(APIView):
+    """パスワードリセットメール送信API"""
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        if not email:
+            return Response({'error': 'メールアドレスを入力してください'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            # セキュリティのため存在しない場合も同じレスポンスを返す
+            return Response({'message': 'パスワードリセットメールを送信しました'})
+
+        # トークン生成
+        token = generate_reset_token()
+        PasswordResetToken.objects.create(user=user, token=token)
+
+        # リセットURL
+        frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
+        reset_url = f'{frontend_url}/reset-password?token={token}'
+
+        # メール送信
+        resend.api_key = os.environ.get('RESEND_API_KEY')
+        resend.Emails.send({
+            'from': 'onboarding@resend.dev',
+            'to': email,
+            'subject': '【StudyTracker】パスワードリセット',
+            'html': f'''
+                <h2>パスワードリセット</h2>
+                <p>{user.username} さん</p>
+                <p>以下のリンクからパスワードをリセットしてください。</p>
+                <p>リンクの有効期限は1時間です。</p>
+                <a href="{reset_url}" style="background:#2563eb;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;">
+                    パスワードをリセット
+                </a>
+                <p>このメールに心当たりがない場合は無視してください。</p>
+            '''
+        })
+
+        return Response({'message': 'パスワードリセットメールを送信しました'})
+
+
+class PasswordResetConfirmView(APIView):
+    """パスワードリセット確認API"""
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        token = request.data.get('token')
+        password = request.data.get('password')
+
+        if not token or not password:
+            return Response({'error': '必要な情報が不足しています'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            reset_token = PasswordResetToken.objects.get(token=token, is_used=False)
+        except PasswordResetToken.DoesNotExist:
+            return Response({'error': '無効なトークンです'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not is_token_valid(reset_token.created_at):
+            return Response({'error': 'トークンの有効期限が切れています'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # パスワード更新
+        user = reset_token.user
+        user.set_password(password)
+        user.save()
+
+        # トークンを使用済みにする
+        reset_token.is_used = True
+        reset_token.save()
+
+        return Response({'message': 'パスワードをリセットしました'})
