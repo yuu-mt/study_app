@@ -29,7 +29,7 @@
         <!-- 週間グラフ -->
         <WeeklyChart :weeklyData="weeklyData" />
         <!-- モンスター -->
-        <MonsterCard :totalMinutes="summary.monthly_minutes" />
+        <MonsterCard :totalMinutes="summary.monthly_minutes" :monsterType="monsterType" />
         <!-- カテゴリータブ -->
         <div class="tabs">
             <button
@@ -87,7 +87,7 @@
         </button>
         </div>
 
-         <!-- 新規登録ボタン -->
+        <!-- 新規登録ボタン -->
         <button class="btn-add" @click="showModal = true">＋</button>
 
         <!-- 新規登録モーダル -->
@@ -219,6 +219,7 @@ const modalError = ref('')
 const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 10))
+const monsterType = ref(localStorage.getItem('monster_type') || 'slime')
 
 const tabs = [
     { label: 'すべて', value: '' },
