@@ -59,18 +59,21 @@ const chartOptions = {
     }
     },
     scales: {
-    y: {
-        beginAtZero: true,
-        ticks: {
-        callback: (value) => `${value}分`
-        },
-        grid: {
-        color: 'rgba(0,0,0,0.05)'
-        }
-    },
-    x: {
-        grid: { display: false }
-    }
+        y: {
+            beginAtZero: true,
+            ticks: {
+                stepSize: 30,
+                callback: (value) => {
+                const h = Math.floor(value / 60)
+                const m = value % 60
+                if (h > 0) return m > 0 ? `${h}時間${m}分` : `${h}時間`
+                return `${value}分`
+                }
+            },
+            grid: {
+                color: 'rgba(0,0,0,0.05)'
+            }
+}
     }
 }
 </script>
