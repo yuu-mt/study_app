@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
     """ユーザー情報取得用シリアライザー"""
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'avatar', 'created_at']
+        fields = ['id', 'email', 'username', 'avatar', 'created_at', 'monster_type']
         read_only_fields = ['id', 'created_at']
 
     """ユーザー情報取得・更新用シリアライザー"""

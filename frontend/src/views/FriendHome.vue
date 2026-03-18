@@ -23,7 +23,7 @@
         </div>
 
         <!-- モンスター -->
-        <MonsterCard :totalMinutes="summary.monthly_minutes" />
+        <MonsterCard :totalMinutes="summary.monthly_minutes" :monsterType="friendMonsterType" />
 
         <!-- カテゴリータブ -->
         <div class="tabs">
@@ -96,6 +96,7 @@ const activeTab = ref('')
 const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 10))
+const friendMonsterType = ref('slime')
 
 const tabs = [
     { label: 'すべて', value: '' },
@@ -113,11 +114,14 @@ const formatMinutes = (minutes) => {
 
 const fetchFriendInfo = async () => {
     try {
-        const res = await api.get('/accounts/friends/')
-        const friend = res.data.results.find(f => f.id === Number(friendId))
-        if (friend) friendName.value = friend.username
+      const res = await api.get('/accounts/friends/')
+      const friend = res.data.results.find(f => f.id === Number(friendId))
+      if (friend) {
+        friendName.value = friend.username
+        friendMonsterType.value = friend.monster_type || 'slime'
+      }
     } catch (error) {
-        console.error(error)
+      console.error(error)
     }
 }
 

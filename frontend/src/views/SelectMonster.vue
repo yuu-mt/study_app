@@ -53,9 +53,9 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import api from '../api.js'
 
 const router = useRouter()
-
 const selected = ref(null)
 
 const monsters = [
@@ -82,10 +82,18 @@ const monsters = [
     },
 ]
 
-const startAdventure = () => {
-    localStorage.setItem('monster_type', selected.value)
-    router.push('/home')
+const startAdventure = async () => {
+    try {
+        await api.patch('/accounts/me/', { monster_type: selected.value })
+        localStorage.setItem('monster_type', selected.value)
+        router.push('/home')
+    } catch (error) {
+        console.error(error)
+        localStorage.setItem('monster_type', selected.value)
+        router.push('/home')
+    }
 }
+
 </script>
 
 <style scoped>
