@@ -60,11 +60,12 @@ const login = async () => {
       const userRes = await authApi.get('/accounts/me/', {
         headers: { Authorization: `Bearer ${res.data.access}` }
       })
-      if (userRes.data.monster_type) {
-        localStorage.setItem('monster_type', userRes.data.monster_type)
-      } else {
-        localStorage.removeItem('monster_type')
+      
+      const monsterType = userRes.data.monster_type
+      if (monsterType && monsterType !== '') {
+        localStorage.setItem('monster_type', monsterType)
       }
+      // monster_typeがない場合はlocalStorageを削除しない
 
       router.push('/home')
     } catch (error) {
@@ -73,7 +74,6 @@ const login = async () => {
       isLoading.value = false
     }
 }
-
 </script>
 
 <style scoped>
