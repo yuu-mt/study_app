@@ -4,6 +4,7 @@
         <div class="header">
             <button class="btn-back" @click="router.push('/home')" :disabled="isStarted">← 戻る</button>
             <h1>📚 学習タイマー</h1>
+            <div class="header-spacer"></div>
         </div>
 
         <!-- 入力フォーム（タイマー停止中のみ表示） -->
@@ -184,16 +185,21 @@ fetchCategories()
 .header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 16px 20px;
     background: #2563eb;
 }
 
 .header h1 {
+    flex: 1;
     font-size: 18px;
     font-weight: 700;
     color: white;
     margin: 0;
+    text-align: center;
+}
+
+.header-spacer {
+    width: 64px;
 }
 
 .form-section {
