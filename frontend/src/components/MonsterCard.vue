@@ -38,25 +38,25 @@ const totalHours = computed(() => Math.floor(props.totalMinutes / 60))
 
 const stages = {
   slime: [
-    { stage: 0, name: 'スライムのたまご', min: 0,    max: 600,  next: true, color: '#38bdf8' },
-    { stage: 1, name: 'ちびスライム',     min: 600,  max: 1800, next: true, color: '#38bdf8' },
-    { stage: 2, name: 'スライム',         min: 1800, max: 3600, next: true, color: '#0ea5e9' },
-    { stage: 3, name: 'キングスライム',   min: 3600, max: 6000, next: true, color: '#0284c7' },
-    { stage: 4, name: '神スライム',       min: 6000, max: null, next: false, color: '#0369a1' },
+    { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true, color: '#38bdf8' },
+    { stage: 1, name: 'ちび雷鳥',     min: 600,  max: 1800, next: true, color: '#38bdf8' },
+    { stage: 2, name: '雷鳥',         min: 1800, max: 3600, next: true, color: '#0ea5e9' },
+    { stage: 3, name: 'キング雷鳥',   min: 3600, max: 6000, next: true, color: '#0284c7' },
+    { stage: 4, name: '伝説の雷鳥',       min: 6000, max: null, next: false, color: '#0369a1' },
   ],
   dragon: [
-    { stage: 0, name: 'ドラゴンのたまご', min: 0,    max: 600,  next: true, color: '#f87171' },
+    { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true, color: '#f87171' },
     { stage: 1, name: 'ちびドラゴン',     min: 600,  max: 1800, next: true, color: '#f87171' },
     { stage: 2, name: 'こドラゴン',       min: 1800, max: 3600, next: true, color: '#ef4444' },
-    { stage: 3, name: 'ドラゴン',         min: 3600, max: 6000, next: true, color: '#dc2626' },
-    { stage: 4, name: '伝説のドラゴン',   min: 6000, max: null, next: false, color: '#b91c1c' },
+    { stage: 3, name: 'レッドドラゴン',         min: 3600, max: 6000, next: true, color: '#dc2626' },
+    { stage: 4, name: '守護者レッドドラゴン',   min: 6000, max: null, next: false, color: '#b91c1c' },
   ],
   dino: [
-    { stage: 0, name: '恐竜のたまご',     min: 0,    max: 600,  next: true, color: '#4ade80' },
+    { stage: 0, name: '？？？のたまご',     min: 0,    max: 600,  next: true, color: '#4ade80' },
     { stage: 1, name: 'ちびブラキオ',     min: 600,  max: 1800, next: true, color: '#4ade80' },
-    { stage: 2, name: 'ブラキオサウルス', min: 1800, max: 3600, next: true, color: '#22c55e' },
-    { stage: 3, name: 'でかブラキオ',     min: 3600, max: 6000, next: true, color: '#16a34a' },
-    { stage: 4, name: '古代ブラキオ',     min: 6000, max: null, next: false, color: '#15803d' },
+    { stage: 2, name: 'ブラキオ', min: 1800, max: 3600, next: true, color: '#22c55e' },
+    { stage: 3, name: 'キングブラキオ',     min: 3600, max: 6000, next: true, color: '#16a34a' },
+    { stage: 4, name: '古代のブラキオ',     min: 6000, max: null, next: false, color: '#15803d' },
   ],
 }
 

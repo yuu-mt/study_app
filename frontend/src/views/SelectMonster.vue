@@ -1,8 +1,8 @@
 <template>
     <div class="select-container">
         <div class="header-area">
-        <h1>🥚 なかまを選ぼう！</h1>
-        <p>卵を選んでください。一緒に成長していきます！</p>
+        <h1>一緒に成長するなかまを選ぼう！</h1>
+        <p>好きな卵を選んでください。</p>
         </div>
 
         <div class="eggs-grid">
@@ -33,8 +33,6 @@
                         transform="rotate(15 44 80)"/>
                     </svg>
                 </div>
-                <div class="monster-name">{{ monster.name }}</div>
-                <div class="monster-desc">{{ monster.desc }}</div>
                 <div v-if="selected === monster.id" class="check">✓</div>
             </div>
         </div>
