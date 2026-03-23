@@ -184,7 +184,7 @@ fetchCategories()
 .header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     padding: 16px 20px;
     background: #2563eb;
 }
