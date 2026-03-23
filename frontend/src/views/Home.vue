@@ -88,7 +88,7 @@
         </div>
 
         <!-- 新規登録ボタン -->
-        <button class="btn-add" @click="showModal = true">＋</button>
+        <button class="btn-add" @click="router.push('/timer')">＋</button>
 
         <!-- 新規登録モーダル -->
         <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">

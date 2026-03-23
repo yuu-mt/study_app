@@ -8,6 +8,7 @@ import FriendHome from '../views/FriendHome.vue'
 import ForgotPassword from '../views/ForgotPassword.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import SelectMonster from '../views/SelectMonster.vue'
+import StudyTimer from '../views/StudyTimer.vue'
 
 
 const routes = [
@@ -21,6 +22,7 @@ const routes = [
     { path: '/forgot-password', name: 'ForgotPassword', component: ForgotPassword, meta: { guest: true } },
     { path: '/reset-password', name: 'ResetPassword', component: ResetPassword, meta: { guest: true } },
     { path: '/select-monster', name: 'SelectMonster', component: SelectMonster, meta: { requiresAuth: true } },
+    { path: '/timer', name: 'StudyTimer', component: StudyTimer, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
