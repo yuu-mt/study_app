@@ -1,7 +1,10 @@
 <template>
   <div class="register-container">
     <div class="logo">
-      <h1>📚 StudyTracker</h1>
+      <h1>
+        <div class="title-monster">Monster</div>
+        <div class="title-study">Study Tracker</div>
+      </h1>
       <p>アカウントを作成して始めよう</p>
     </div>
 
@@ -99,10 +102,29 @@ const register = async () => {
 }
 
 .logo h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.title-monster {
+  font-family: Georgia, serif;
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 700;
+  color: #dc2626;
+  letter-spacing: 1px;
+}
+
+.title-study {
+  font-size: 12px;
+  font-weight: 600;
   color: #2563eb;
-  margin-bottom: 6px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
 }
 
 .logo p {

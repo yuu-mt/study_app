@@ -107,17 +107,17 @@ const login = async () => {
 
 .title-monster {
   font-family: Georgia, serif;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
-  color: #fca5a5;
+  color: #dc2626;
   letter-spacing: 1px;
 }
 
 .title-study {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
-  color: #bfdbfe;
-  letter-spacing: 3px;
+  color: #2563eb;
+  letter-spacing: 4px;
   text-transform: uppercase;
 }
 
