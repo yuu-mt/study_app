@@ -1,6 +1,6 @@
 <template>
     <div class="chart-container">
-        <h3 class="chart-title">📊 週間学習時間</h3>
+        <h3 class="chart-title"> 週間学習時間</h3>
         <Bar :data="chartData" :options="chartOptions" />
     </div>
 </template>

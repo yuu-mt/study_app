@@ -25,7 +25,7 @@
             </div>
             <div class="card">
                 <div class="card-label">連続学習日数</div>
-                <div class="card-value">{{ summary.streak_days }}日🔥</div>
+                <div class="card-value">{{ summary.streak_days }}日</div>
             </div>
         </div>
 
