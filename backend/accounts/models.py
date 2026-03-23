@@ -32,7 +32,7 @@ class User(AbstractBaseUser, PermissionsMixin):
   monster_type = models.CharField(
         max_length=20,
         default='slime',
-        choices=[('slime', 'スライム'), ('dragon', 'ドラゴン'), ('dino', '恐竜')]
+        choices=[('bird', '雷鳥'), ('dragon', 'ドラゴン'), ('dino', '恐竜')]
     )
   
   objects = UserManager()
