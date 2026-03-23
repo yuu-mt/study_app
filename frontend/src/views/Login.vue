@@ -50,6 +50,7 @@ const errorMessage = ref('')
 const isLoading = ref(false)
 
 const login = async () => {
+    const login = async () => {
     errorMessage.value = ''
     isLoading.value = true
     try {
@@ -59,16 +60,17 @@ const login = async () => {
       localStorage.setItem('access_token', res.data.access)
       localStorage.setItem('refresh_token', res.data.refresh)
 
-      // monster_typeをAPIから取得してlocalStorageに保存
       const userRes = await authApi.get('/accounts/me/', {
         headers: { Authorization: `Bearer ${res.data.access}` }
       })
-      
-      const monsterType = userRes.data.monster_type
-      if (monsterType && monsterType !== '') {
-        localStorage.setItem('monster_type', monsterType)
+
+      if (userRes.data.monster_selected) {
+        // 選択済みならmonster_typeを保存してホームへ
+        localStorage.setItem('monster_type', userRes.data.monster_type)
+      } else {
+        // 未選択なら削除して卵選択へ
+        localStorage.removeItem('monster_type')
       }
-      // monster_typeがない場合はlocalStorageを削除しない
 
       router.push('/home')
     } catch (error) {
@@ -76,6 +78,7 @@ const login = async () => {
     } finally {
       isLoading.value = false
     }
+  }
 }
 </script>
 
