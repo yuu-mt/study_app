@@ -2,7 +2,8 @@
     <div class="timer-container">
         <!-- ヘッダー -->
         <div class="header">
-        <h1>📚 学習タイマー</h1>
+            <button class="btn-back" @click="router.push('/home')" :disabled="isStarted">← 戻る</button>
+            <h1>📚 学習タイマー</h1>
         </div>
 
         <!-- 入力フォーム（タイマー停止中のみ表示） -->
@@ -28,8 +29,6 @@
         </div>
 
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-
-        <button class="btn-back" @click="router.push('/home')">← 戻る</button>
 
         <button class="btn-start" @click="startTimer">
             ▶ スタート
@@ -396,6 +395,10 @@ fetchCategories()
     cursor: pointer;
 }
 
+.btn-back:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
 
 @keyframes pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
