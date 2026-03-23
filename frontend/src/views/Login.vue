@@ -1,7 +1,10 @@
 <template>
   <div class="login-container">
     <div class="logo">
-      <h1>📚 StudyTracker</h1>
+      <h1>
+          <span class="title-monster">Monster</span>
+          <span class="title-study">Study Tracker</span>
+      </h1>
       <p>学習を記録して、モンスターを育てよう</p>
     </div>
 
@@ -93,10 +96,29 @@ const login = async () => {
 }
 
 .logo h1 {
-  font-size: 28px;
-  font-weight: 800;
-  color: #2563eb;
-  margin-bottom: 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.title-monster {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fca5a5;
+  letter-spacing: 1px;
+}
+
+.title-study {
+  font-size: 11px;
+  font-weight: 600;
+  color: #bfdbfe;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
 .logo p {

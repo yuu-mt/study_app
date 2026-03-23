@@ -2,7 +2,10 @@
     <div class="home-container">
         <!-- ヘッダー -->
         <div class="header">
-            <h1>StudyTracker</h1>
+            <h1>
+                <span class="title-monster">Monster</span>
+                <span class="title-study">Study Tracker</span>
+            </h1>
             <div class="header-btns">
                 <button class="btn-friends" @click="router.push('/friends')">👥</button>
                 <button class="btn-friends" @click="router.push('/settings')">⚙️</button>
@@ -449,6 +452,25 @@ fetchWeeklyChart()
     font-weight: 700;
     color: white;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.title-study {
+    font-size: 11px;
+    font-weight: 600;
+    color: #bfdbfe;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.title-monster {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fca5a5;
+    letter-spacing: 1px;
 }
 
 .header-btns {
