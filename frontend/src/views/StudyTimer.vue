@@ -29,6 +29,8 @@
 
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
 
+        <button class="btn-back" @click="router.push('/home')">← 戻る</button>
+
         <button class="btn-start" @click="startTimer">
             ▶ スタート
         </button>
@@ -382,6 +384,18 @@ fetchCategories()
     cursor: pointer;
     padding: 8px;
 }
+
+.btn-back {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 
 @keyframes pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
