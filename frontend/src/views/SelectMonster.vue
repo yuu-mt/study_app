@@ -61,8 +61,8 @@ const monsters = [
         id: 'slime',
         name: 'スライム',
         desc: 'プルプルかわいい！',
-        eggLight: '#bae6fd',
-        eggDark: '#38bdf8',
+        eggLight: '#fef08a',
+        eggDark: '#fbbf24',
     },
     {
         id: 'dragon',

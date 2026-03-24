@@ -2,7 +2,7 @@
   <div class="monster-card">
     <div class="monster-display">
       <svg viewBox="0 0 120 170" class="monster-svg">
-        <SlimeMonster v-if="props.monsterType === 'slime'" :stage="currentStage.stage"/>
+        <BirdMonster v-if="props.monsterType === 'slime'" :stage="currentStage.stage"/>
         <DragonMonster v-else-if="props.monsterType === 'dragon'" :stage="currentStage.stage"/>
         <DinoMonster v-else-if="props.monsterType === 'dino'" :stage="currentStage.stage"/>
       </svg>
@@ -25,7 +25,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import SlimeMonster from './monsters/SlimeMonster.vue'
+import BirdMonster from './monsters/BirdMonster.vue'
 import DragonMonster from './monsters/DragonMonster.vue'
 import DinoMonster from './monsters/DinoMonster.vue'
 
@@ -37,12 +37,12 @@ const props = defineProps({
 const totalHours = computed(() => Math.floor(props.totalMinutes / 60))
 
 const stages = {
-  slime: [
-    { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true, color: '#38bdf8' },
-    { stage: 1, name: 'ちび雷鳥',     min: 600,  max: 1800, next: true, color: '#38bdf8' },
-    { stage: 2, name: '雷鳥',         min: 1800, max: 3600, next: true, color: '#0ea5e9' },
-    { stage: 3, name: 'キング雷鳥',   min: 3600, max: 6000, next: true, color: '#0284c7' },
-    { stage: 4, name: '伝説の雷鳥',       min: 6000, max: null, next: false, color: '#0369a1' },
+    slime: [
+    { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true,  color: '#fbbf24' },
+    { stage: 1, name: 'ちびチョコボ',   min: 600,  max: 1800, next: true,  color: '#fbbf24' },
+    { stage: 2, name: 'チョコボ',       min: 1800, max: 3600, next: true,  color: '#f59e0b' },
+    { stage: 3, name: '大型チョコボ',   min: 3600, max: 6000, next: true,  color: '#d97706' },
+    { stage: 4, name: '伝説のチョコボ', min: 6000, max: null, next: false, color: '#b45309' },
   ],
   dragon: [
     { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true, color: '#f87171' },
