@@ -29,6 +29,24 @@ class StudyRecordListCreateView(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
+        record = serializer.save(user=self.request.user)
+        
+        # Slack通知
+        from .slack import check_milestone, check_monster_evolution
+        from django.db.models import Sum
+        
+        # 累計学習時間を計算
+        total = StudyRecord.objects.filter(
+            user=self.request.user
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+        
+        prev_total = total - record.duration_minutes
+        
+        # マイルストーンチェック
+        check_milestone(self.request.user, total)
+        
+        # モンスター進化チェック
+        check_monster_evolution(self.request.user, prev_total, total)
         # 保存時に自動でログイン中のユーザーをセット
         serializer.save(user=self.request.user)
 
