@@ -82,7 +82,10 @@ const monsters = [
 
 const startAdventure = async () => {
     try {
-        await api.patch('/accounts/me/', { monster_type: selected.value })
+        await api.patch('/accounts/me/', {
+        monster_type: selected.value,
+        monster_selected: true  // ← これが抜けていた
+        })
         localStorage.setItem('monster_type', selected.value)
         router.push('/home')
     } catch (error) {
