@@ -20,18 +20,12 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         return user
         
 class UserSerializer(serializers.ModelSerializer):
-    """ユーザー情報取得用シリアライザー"""
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'username', 'avatar', 'created_at', 'monster_type']
-        read_only_fields = ['id', 'created_at']
-
     """ユーザー情報取得・更新用シリアライザー"""
     password = serializers.CharField(write_only=True, min_length=8, required=False)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'username', 'avatar', 'created_at', 'password']
+        fields = ['id', 'email', 'username', 'avatar', 'created_at', 'password', 'monster_type', 'monster_selected']
         read_only_fields = ['id', 'created_at']
 
     def update(self, instance, validated_data):
