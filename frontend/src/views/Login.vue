@@ -50,34 +50,30 @@ const errorMessage = ref('')
 const isLoading = ref(false)
 
 const login = async () => {
-    const login = async () => {
-    errorMessage.value = ''
-    isLoading.value = true
-    try {
-      const res = await authApi.post('/accounts/login/',
-        { email: email.value, password: password.value }
-      )
-      localStorage.setItem('access_token', res.data.access)
-      localStorage.setItem('refresh_token', res.data.refresh)
+  errorMessage.value = ''
+  isLoading.value = true
+  try {
+    const res = await authApi.post('/accounts/login/',
+      { email: email.value, password: password.value }
+    )
+    localStorage.setItem('access_token', res.data.access)
+    localStorage.setItem('refresh_token', res.data.refresh)
 
-      const userRes = await authApi.get('/accounts/me/', {
-        headers: { Authorization: `Bearer ${res.data.access}` }
-      })
+    const userRes = await authApi.get('/accounts/me/', {
+      headers: { Authorization: `Bearer ${res.data.access}` }
+    })
 
-      if (userRes.data.monster_selected) {
-        // 選択済みならmonster_typeを保存してホームへ
-        localStorage.setItem('monster_type', userRes.data.monster_type)
-      } else {
-        // 未選択なら削除して卵選択へ
-        localStorage.removeItem('monster_type')
-      }
-
-      router.push('/home')
-    } catch (error) {
-      errorMessage.value = 'メールアドレスまたはパスワードが正しくありません'
-    } finally {
-      isLoading.value = false
+    if (userRes.data.monster_selected) {
+      localStorage.setItem('monster_type', userRes.data.monster_type)
+    } else {
+      localStorage.removeItem('monster_type')
     }
+
+    router.push('/home')
+  } catch (error) {
+    errorMessage.value = 'メールアドレスまたはパスワードが正しくありません'
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
