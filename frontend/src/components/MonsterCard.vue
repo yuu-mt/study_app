@@ -39,10 +39,10 @@ const totalHours = computed(() => Math.floor(props.totalMinutes / 60))
 const stages = {
   bird: [
     { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true,  color: '#fbbf24' },
-    { stage: 1, name: 'ちびチョコボ',   min: 600,  max: 1800, next: true,  color: '#fbbf24' },
-    { stage: 2, name: 'チョコボ',       min: 1800, max: 3600, next: true,  color: '#f59e0b' },
-    { stage: 3, name: '大型チョコボ',   min: 3600, max: 6000, next: true,  color: '#d97706' },
-    { stage: 4, name: '伝説のチョコボ', min: 6000, max: null, next: false, color: '#b45309' },
+    { stage: 1, name: 'ちび雷鳥',   min: 600,  max: 1800, next: true,  color: '#fbbf24' },
+    { stage: 2, name: '雷鳥',       min: 1800, max: 3600, next: true,  color: '#f59e0b' },
+    { stage: 3, name: 'サンダーバード',   min: 3600, max: 6000, next: true,  color: '#d97706' },
+    { stage: 4, name: '伝説のサンダーバード', min: 6000, max: null, next: false, color: '#b45309' },
   ],
   dragon: [
     { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true, color: '#f87171' },
