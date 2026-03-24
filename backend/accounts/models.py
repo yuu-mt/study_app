@@ -35,6 +35,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         choices=[('bird', '雷鳥'), ('dragon', 'ドラゴン'), ('dino', '恐竜')]
     )
   
+  monster_selected = models.BooleanField(default=False)
+  
   objects = UserManager()
 
   USERNAME_FIELD = 'email'
