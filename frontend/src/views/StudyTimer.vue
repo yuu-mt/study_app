@@ -88,6 +88,10 @@ const errorMessage = ref('')
 const isStarted = ref(false)
 const isPaused = ref(false)
 const totalSeconds = ref(0)
+const startTime = ref(null)
+const pausedTime = ref(0)
+const pauseStart = ref(null)
+
 let timerInterval = null
 
 const fetchCategories = async () => {
@@ -126,15 +130,27 @@ const startTimer = () => {
     }
     isStarted.value = true
     isPaused.value = false
+    startTime.value = Date.now()
+    pausedTime.value = 0
+
     timerInterval = setInterval(() => {
         if (!isPaused.value) {
-        totalSeconds.value++
+        const elapsed = Date.now() - startTime.value - pausedTime.value
+        totalSeconds.value = Math.floor(elapsed / 1000)
         }
-    }, 1000)
+    }, 500)
 }
 
 const togglePause = () => {
-    isPaused.value = !isPaused.value
+    if (!isPaused.value) {
+        // 一時停止開始
+        pauseStart.value = Date.now()
+        isPaused.value = true
+    } else {
+        // 再開：一時停止していた時間を加算
+        pausedTime.value += Date.now() - pauseStart.value
+        isPaused.value = false
+    }
 }
 
 const completeTimer = async () => {
@@ -164,6 +180,9 @@ const cancelTimer = () => {
     isStarted.value = false
     isPaused.value = false
     totalSeconds.value = 0
+    startTime.value = null
+    pausedTime.value = 0
+    pauseStart.value = null
 }
 
 onUnmounted(() => {
