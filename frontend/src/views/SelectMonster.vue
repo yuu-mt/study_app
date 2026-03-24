@@ -58,9 +58,9 @@ const selected = ref(null)
 
 const monsters = [
     {
-        id: 'slime',
-        name: 'スライム',
-        desc: 'プルプルかわいい！',
+        id: 'bird',
+        name: '鳥',
+        desc: '',
         eggLight: '#fef08a',
         eggDark: '#fbbf24',
     },

@@ -2,7 +2,7 @@
   <div class="monster-card">
     <div class="monster-display">
       <svg viewBox="0 0 120 170" class="monster-svg">
-        <BirdMonster v-if="props.monsterType === 'slime'" :stage="currentStage.stage"/>
+        <BirdMonster v-if="props.monsterType === 'bird'" :stage="currentStage.stage"/>
         <DragonMonster v-else-if="props.monsterType === 'dragon'" :stage="currentStage.stage"/>
         <DinoMonster v-else-if="props.monsterType === 'dino'" :stage="currentStage.stage"/>
       </svg>
@@ -37,7 +37,7 @@ const props = defineProps({
 const totalHours = computed(() => Math.floor(props.totalMinutes / 60))
 
 const stages = {
-    slime: [
+  bird: [
     { stage: 0, name: '？？？のたまご', min: 0,    max: 600,  next: true,  color: '#fbbf24' },
     { stage: 1, name: 'ちびチョコボ',   min: 600,  max: 1800, next: true,  color: '#fbbf24' },
     { stage: 2, name: 'チョコボ',       min: 1800, max: 3600, next: true,  color: '#f59e0b' },
