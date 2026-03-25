@@ -67,24 +67,43 @@ class StudyRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
         return StudyRecord.objects.filter(user=self.request.user)
     
     def perform_update(self, serializer):
-        from .slack import check_monster_evolution
+        from .slack import check_monster_evolution, check_milestone
         from django.db.models import Sum
+        from django.utils import timezone
 
         # 更新前の累計
-        prev_total = StudyRecord.objects.filter(
+        prev_total_all = StudyRecord.objects.filter(
             user=self.request.user
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        # 今月の更新前累計
+        today = timezone.now().date()
+        month_start = today.replace(day=1)
+        prev_total_monthly = StudyRecord.objects.filter(
+            user=self.request.user,
+            study_date__gte=month_start,
+            study_date__lte=today
         ).aggregate(total=Sum('duration_minutes'))['total'] or 0
 
         serializer.save()
 
         # 更新後の累計
-        new_total = StudyRecord.objects.filter(
+        new_total_all = StudyRecord.objects.filter(
             user=self.request.user
         ).aggregate(total=Sum('duration_minutes'))['total'] or 0
 
-        # モンスター進化チェック
-        check_monster_evolution(self.request.user, prev_total, new_total)
+        # 今月の更新後累計
+        new_total_monthly = StudyRecord.objects.filter(
+            user=self.request.user,
+            study_date__gte=month_start,
+            study_date__lte=today
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
 
+        # マイルストーン通知（月間）
+        check_milestone(self.request.user, prev_total_monthly, new_total_monthly)
+
+        # モンスター進化通知（全期間）
+        check_monster_evolution(self.request.user, prev_total_all, new_total_all)
 
 class StudySummaryView(APIView):
     """学習時間集計API（週間・月間）"""
