@@ -32,7 +32,7 @@
         <!-- 週間グラフ -->
         <WeeklyChart :weeklyData="weeklyData" />
         <!-- モンスター -->
-        <MonsterCard :totalMinutes="totalMinutes" :monsterType="monsterType" />
+        <MonsterCard :totalMinutes="summary.monthly_minutes" :monsterType="monsterType" />
         <!-- カテゴリータブ -->
         <div class="tabs">
             <button
