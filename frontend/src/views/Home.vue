@@ -25,7 +25,7 @@
             </div>
             <div class="card">
                 <div class="card-label">連続学習日数</div>
-                <div class="card-value">{{ summary.streak_days }}日</div>
+                <div class="card-value">{{ summary.streak_days }}日🔥</div>
             </div>
         </div>
 
@@ -223,8 +223,6 @@ const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 10))
 const monsterType = ref(localStorage.getItem('monster_type') || 'slime')
-const totalMinutes = ref(0)
-
 
 const tabs = [
     { label: 'すべて', value: '' },
@@ -420,6 +418,8 @@ const deleteRecord = async (record) => {
     }
 }
 
+const totalMinutes = ref(0)
+
 const fetchTotalSummary = async () => {
     try {
         const res = await api.get('/study/total-summary/')
@@ -428,6 +428,8 @@ const fetchTotalSummary = async () => {
         console.error(error)
     }
 }
+
+
 
 onMounted(() => {
 fetchRecords()

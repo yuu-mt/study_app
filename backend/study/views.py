@@ -57,7 +57,6 @@ class StudyRecordListCreateView(generics.ListCreateAPIView):
         # モンスター進化通知（全期間）
         check_monster_evolution(self.request.user, prev_total_all, total_all)
 
-
 class StudyRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
     """学習記録詳細・更新・削除API"""
     serializer_class = StudyRecordSerializer
