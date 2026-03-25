@@ -343,6 +343,7 @@ const createRecord = async () => {
         fetchRecords(1)
         fetchSummary()
         fetchWeeklyChart()
+        fetchTotalSummary()
     } catch (error) {
         console.error('保存エラー:', error.response?.data)
         modalError.value = '保存に失敗しました'
