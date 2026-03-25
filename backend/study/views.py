@@ -47,8 +47,6 @@ class StudyRecordListCreateView(generics.ListCreateAPIView):
         
         # モンスター進化チェック
         check_monster_evolution(self.request.user, prev_total, total)
-        # 保存時に自動でログイン中のユーザーをセット
-        serializer.save(user=self.request.user)
 
 
 class StudyRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
