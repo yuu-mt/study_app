@@ -65,6 +65,25 @@ class StudyRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         # 自分の記録のみ操作可能
         return StudyRecord.objects.filter(user=self.request.user)
+    
+    def perform_update(self, serializer):
+        from .slack import check_monster_evolution
+        from django.db.models import Sum
+
+        # 更新前の累計
+        prev_total = StudyRecord.objects.filter(
+            user=self.request.user
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        serializer.save()
+
+        # 更新後の累計
+        new_total = StudyRecord.objects.filter(
+            user=self.request.user
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        # モンスター進化チェック
+        check_monster_evolution(self.request.user, prev_total, new_total)
 
 
 class StudySummaryView(APIView):
