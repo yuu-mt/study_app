@@ -206,8 +206,7 @@ import { useRouter } from 'vue-router'
 import api from '../api.js'
 import WeeklyChart from '../components/WeeklyChart.vue'
 import MonsterCard from '../components/MonsterCard.vue'
-import { ref, onMounted, computed } from 'vue'
-
+import { ref, onMounted, computed, onActivated } from 'vue'
 
 const router = useRouter()
 
@@ -400,6 +399,7 @@ const updateRecord = async () => {
         fetchRecords(currentPage.value)
         fetchSummary()
         fetchWeeklyChart()
+        fetchTotalSummary()
     } catch (error) {
         editError.value = '更新に失敗しました'
     } finally {
@@ -414,6 +414,7 @@ const deleteRecord = async (record) => {
         fetchRecords(currentPage.value)
         fetchSummary()
         fetchWeeklyChart()
+        fetchTotalSummary()
     } catch (error) {
         console.error(error)
     }
@@ -430,14 +431,17 @@ const fetchTotalSummary = async () => {
     }
 }
 
-
-
 onMounted(() => {
 fetchRecords()
 fetchSummary()
 fetchCategories()
 fetchWeeklyChart()
 fetchTotalSummary()
+})
+
+onActivated(() => {
+    fetchTotalSummary()
+    fetchSummary()
 })
 </script>
 
