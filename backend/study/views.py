@@ -31,22 +31,31 @@ class StudyRecordListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         record = serializer.save(user=self.request.user)
         
-        # Slack通知
         from .slack import check_milestone, check_monster_evolution
         from django.db.models import Sum
-        
-        # 累計学習時間を計算
-        total = StudyRecord.objects.filter(
+        from django.utils import timezone
+
+        # 全期間の累計（モンスター進化用）
+        total_all = StudyRecord.objects.filter(
             user=self.request.user
         ).aggregate(total=Sum('duration_minutes'))['total'] or 0
-        
-        prev_total = total - record.duration_minutes
-        
-        # マイルストーンチェック
-        check_milestone(self.request.user, total)
-        
-        # モンスター進化チェック
-        check_monster_evolution(self.request.user, prev_total, total)
+        prev_total_all = total_all - record.duration_minutes
+
+        # 今月の累計（マイルストーン通知用）
+        today = timezone.now().date()
+        month_start = today.replace(day=1)
+        total_monthly = StudyRecord.objects.filter(
+            user=self.request.user,
+            study_date__gte=month_start,
+            study_date__lte=today
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+        prev_total_monthly = total_monthly - record.duration_minutes
+
+        # マイルストーン通知（月間）
+        check_milestone(self.request.user, prev_total_monthly, total_monthly)
+
+        # モンスター進化通知（全期間）
+        check_monster_evolution(self.request.user, prev_total_all, total_all)
 
 
 class StudyRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -275,3 +284,14 @@ class FriendSummaryView(APIView):
             'monthly_minutes': monthly,
             'streak_days': streak,
         })
+
+class TotalSummaryView(APIView):
+    """全期間累計学習時間API"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        total = StudyRecord.objects.filter(
+            user=request.user
+        ).aggregate(total=Sum('duration_minutes'))['total'] or 0
+
+        return Response({'total_minutes': total})

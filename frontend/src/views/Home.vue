@@ -32,7 +32,7 @@
         <!-- 週間グラフ -->
         <WeeklyChart :weeklyData="weeklyData" />
         <!-- モンスター -->
-        <MonsterCard :totalMinutes="summary.monthly_minutes" :monsterType="monsterType" />
+        <MonsterCard :totalMinutes="totalMinutes" :monsterType="monsterType" />
         <!-- カテゴリータブ -->
         <div class="tabs">
             <button
@@ -223,6 +223,8 @@ const currentPage = ref(1)
 const totalCount = ref(0)
 const totalPages = computed(() => Math.ceil(totalCount.value / 10))
 const monsterType = ref(localStorage.getItem('monster_type') || 'slime')
+const totalMinutes = ref(0)
+
 
 const tabs = [
     { label: 'すべて', value: '' },
@@ -418,11 +420,21 @@ const deleteRecord = async (record) => {
     }
 }
 
+const fetchTotalSummary = async () => {
+    try {
+        const res = await api.get('/study/total-summary/')
+        totalMinutes.value = res.data.total_minutes
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 onMounted(() => {
 fetchRecords()
 fetchSummary()
 fetchCategories()
 fetchWeeklyChart()
+fetchTotalSummary()
 })
 </script>
 

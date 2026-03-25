@@ -9,6 +9,7 @@ from .views import (
     WeeklyRankingView,
     FriendRecordListView,
     FriendSummaryView,
+    TotalSummaryView,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     path('records/<int:record_id>/stamp/', StampView.as_view(), name='stamp'),
     path('weekly-chart/', WeeklyChartView.as_view(), name='weekly_chart'),
     path('ranking/', WeeklyRankingView.as_view(), name='weekly_ranking'),
+    path('total-summary/', TotalSummaryView.as_view(), name='total_summary')
 ]
