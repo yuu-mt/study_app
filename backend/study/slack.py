@@ -45,6 +45,6 @@ def check_monster_evolution(user, prev_minutes, new_minutes):
             names = monster_names.get(monster_type, monster_names['bird'])
             if i < len(names):
                 send_slack_message(
-                    f'🐲 *{user.username}* のモンスターが *{names[i]}* に進化した！ Good-job！'
+                    f'🎉 *{user.username}* のモンスターが *{names[i]}* に進化した！ Good-job！'
                 )
             break
