@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from './router/index.js'
 
 const api = axios.create({
-    baseURL: 'https://studyapp-production-0881.up.railway.app/api'
+    baseURL: 'https://monster-study-tracker.fly.dev/api'
 })
 
 // リクエストインターセプター
@@ -52,5 +52,5 @@ api.interceptors.response.use(
 
 export default api
 export const authApi = axios.create({
-    baseURL: 'https://studyapp-production-0881.up.railway.app/api',
+    baseURL: 'https://monster-study-tracker.fly.dev/api',
 })
