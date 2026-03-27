@@ -30,7 +30,7 @@ api.interceptors.response.use(
 
             try{
                 const refreshToken = localStorage.getItem('refresh_token')
-                const res = await axios.post('http://127.0.0.1:8000/api/accounts/token/refresh/',  { refresh: refreshToken
+                const res = await axios.post('https://monster-study-tracker.fly.dev/api/accounts/token/refresh/',  { refresh: refreshToken
                 })
 
                 const newAccessToken = res.data.access
