@@ -8,7 +8,7 @@ class Category(models.Model):
       ('tech', '技術'),
       ('culture', '教養'),
       ('license', '資格'),
-      ('curriculum', 'カリキュラム')
+      ('curriculum', 'カリキュラム'),
   ]
   name = models.CharField(max_length=20, choices=CATEGORY_CHOICE, unique=True, verbose_name='カテゴリー名')
 
