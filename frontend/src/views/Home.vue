@@ -228,6 +228,7 @@ const tabs = [
     { label: '技術', value: 'tech' },
     { label: '教養', value: 'culture' },
     { label: '資格', value: 'license' },
+    { label: 'カリキュラム', value: 'curriculum' },
 ]
 
 const today = new Date().toISOString().split('T')[0]
