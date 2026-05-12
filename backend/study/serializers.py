@@ -19,6 +19,8 @@ class StudyRecordSerializer(serializers.ModelSerializer):
     duration_display = serializers.SerializerMethodField()
     my_stamp = serializers.SerializerMethodField() 
 
+
+
     class Meta:
         model = StudyRecord
         fields = [
