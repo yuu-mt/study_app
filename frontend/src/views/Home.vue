@@ -103,7 +103,7 @@
                     <select v-model="newRecord.category">
                         <option value="">選択してください</option>
                         <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                        {{ cat.get_name_display }}
+                        {{ getCategoryLabel(cat) }}
                         </option>
                     </select>
                 </div>
@@ -156,7 +156,7 @@
                     <select v-model="editRecord.category">
                         <option value="">選択してください</option>
                         <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                        {{ cat.get_name_display }}
+                        {{ getCategoryLabel(cat) }}
                         </option>
                     </select>
                 </div>
@@ -214,6 +214,12 @@ const summary = ref({ weekly_minutes: 0, monthly_minutes: 0, streak_days: 0 })
 const weeklyData = ref([])
 const records = ref([])
 const categories = ref([])
+const categoryLabels = {
+    tech: '技術',
+    culture: '教養',
+    license: '資格',
+    curriculum: 'カリキュラム',
+}
 const activeTab = ref('')
 const showModal = ref(false)
 const isSubmitting = ref(false)
@@ -259,6 +265,10 @@ const formatMinutes = (minutes) => {
     const m = minutes % 60
     if (h > 0) return m > 0 ? `${h}時間${m}分` : `${h}時間`
     return `${m}分`
+}
+
+const getCategoryLabel = (category) => {
+    return categoryLabels[category.name] || category.get_name_display
 }
 
 const fetchRecords = async (page = 1) => {

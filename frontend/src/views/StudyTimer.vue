@@ -14,7 +14,7 @@
             <select v-model="form.category">
             <option value="">選択してください</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                {{ cat.get_name_display }}
+                {{ getCategoryLabel(cat) }}
             </option>
             </select>
         </div>
@@ -79,6 +79,12 @@ import api from '../api.js'
 const router = useRouter()
 
 const categories = ref([])
+const categoryLabels = {
+    tech: '技術',
+    culture: '教養',
+    license: '資格',
+    curriculum: 'カリキュラム',
+}
 const form = ref({
     category: '',
     title: '',
@@ -105,8 +111,12 @@ const fetchCategories = async () => {
 
 const categoryName = computed(() => {
     const cat = categories.value.find(c => c.id === form.value.category)
-    return cat ? cat.get_name_display : ''
+    return cat ? getCategoryLabel(cat) : ''
 })
+
+const getCategoryLabel = (category) => {
+    return categoryLabels[category.name] || category.get_name_display
+}
 
 const formattedTime = computed(() => {
     const h = Math.floor(totalSeconds.value / 3600)
