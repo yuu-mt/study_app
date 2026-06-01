@@ -171,14 +171,14 @@ const completeTimer = async () => {
     const today = new Date().toISOString().split('T')[0]
 
     try {
-        await api.post('/study/records/', {
+        const response = await api.post('/study/records/', {
         category: Number(form.value.category),
         title: form.value.title,
         description: form.value.description,
         study_date: today,
         duration_minutes: durationMinutes,
         })
-        router.push('/home')
+        router.push(`/review?id=${response.data.id}&title=${encodeURIComponent(form.value.title)}`)
     } catch (error) {
         console.error(error)
     }

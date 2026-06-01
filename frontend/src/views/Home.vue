@@ -7,6 +7,7 @@
                 <span class="title-study">Study Tracker</span>
             </h1>
             <div class="header-btns">
+                <button class="btn-friends" @click="router.push('/study-log')">📖</button>
                 <button class="btn-friends" @click="router.push('/friends')">👥</button>
                 <button class="btn-friends" @click="router.push('/settings')">⚙️</button>
                 <button class="btn-logout" @click="logout">ログアウト</button>
@@ -188,6 +189,39 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label>理解度</label>
+                    <div class="stars">
+                        <button
+                        v-for="i in 5"
+                        :key="i"
+                        :class="['star-btn', editRecord.understanding >= i ? 'active' : '']"
+                        @click="editRecord.understanding = i"
+                        >★</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>問題点 / 疑問点</label>
+                    <textarea v-model="editRecord.questions" placeholder="わからなかったこと、疑問点など"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>解決に向けて行ったこと</label>
+                    <textarea v-model="editRecord.solutions" placeholder="問題をどう解決したかなど"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>できるようになったこと</label>
+                    <textarea v-model="editRecord.achievements" placeholder="習得したことなど"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>難しかったこと</label>
+                    <textarea v-model="editRecord.struggles" placeholder="つまずいた点など"></textarea>
+                </div>
+
+
                 <div v-if="editError" class="error-message">{{ editError }}</div>
 
                 <div class="modal-actions">
@@ -258,6 +292,11 @@ const editRecord = ref({
     study_date: '',
     hours: 1,
     minutes: 0,
+    understanding: 0,  
+    questions: '',       
+    struggles: '',       
+    achievements: '',    
+    solutions: '', 
 })
 
 const formatMinutes = (minutes) => {
@@ -386,6 +425,11 @@ const openEditModal = (record) => {
         study_date: record.study_date,
         hours: Math.floor(record.duration_minutes / 60),
         minutes: record.duration_minutes % 60,
+        understanding: record.understanding || 0,   
+        questions: record.questions || '',          
+        struggles: record.struggles || '',           
+        achievements: record.achievements || '',    
+        solutions: record.solutions || '',          
     }
     showEditModal.value = true
 }
@@ -405,6 +449,11 @@ const updateRecord = async () => {
         description: editRecord.value.description,
         study_date: editRecord.value.study_date,
         duration_minutes: duration,
+        understanding: editRecord.value.understanding || null,
+        questions: editRecord.value.questions,
+        struggles: editRecord.value.struggles,
+        achievements: editRecord.value.achievements,
+        solutions: editRecord.value.solutions,
         })
         showEditModal.value = false
         fetchRecords(currentPage.value)
@@ -658,6 +707,7 @@ onActivated(() => {
     position: fixed;
     bottom: 24px;
     right: 24px;
+    left: calc(70%);
     width: 52px;
     height: 52px;
     border-radius: 50%;
@@ -839,5 +889,23 @@ onActivated(() => {
     padding: 4px 8px;
     font-size: 12px;
     cursor: pointer;
+}
+.stars {
+    display: flex;
+    gap: 8px;
+}
+
+.star-btn {
+    font-size: 28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #e2e8f0;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.star-btn.active {
+    color: #fbbf24;
 }
 </style>

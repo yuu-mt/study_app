@@ -3,7 +3,7 @@ import router from './router/index.js'
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'https://monster-study-tracker.fly.dev/api'
 const api = axios.create({
-    baseURL: 'https://monster-study-tracker.fly.dev/api'
+    baseURL: BASE_URL
 })
 
 // リクエストインターセプター
