@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Category(models.Model):
@@ -37,8 +38,20 @@ class StudyRecord(models.Model):
     description = models.TextField(blank=True, verbose_name='学習詳細')
     study_date = models.DateField(verbose_name='学習日')
     duration_minutes = models.PositiveIntegerField(verbose_name='学習時間（分）')
+    understanding = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name='理解度'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    #振り返りフィールド
+    questions = models.TextField(blank=True, null=True, verbose_name='問題点/疑問点')
+    struggles = models.TextField(blank=True, null=True, verbose_name='難しかったこと')
+    achievements = models.TextField(blank=True, null=True, verbose_name='できるようになったこと')
+    solutions = models.TextField(blank=True, null=True, verbose_name='解決に向けて行ったこと')
 
     class Meta:
         verbose_name = '学習記録'

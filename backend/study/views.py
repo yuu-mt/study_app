@@ -332,3 +332,29 @@ class TotalSummaryView(APIView):
         ).aggregate(total=Sum('duration_minutes'))['total'] or 0
 
         return Response({'total_minutes': total})
+    
+class MonthlyChartView(APIView):
+    """月別学習時間グラフAPI"""
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        from django.db.models import Sum
+        from django.db.models.functions import TruncMonth
+
+        results = (
+            StudyRecord.objects
+            .filter(user=request.user)
+            .annotate(month=TruncMonth('study_date'))
+            .values('month')
+            .annotate(total=Sum('duration_minutes'))
+            .order_by('month')
+        )
+
+        data = []
+        for r in results:
+            data.append({
+                'month': r['month'].strftime('%Y/%m'),
+                'minutes': r['total'] or 0,
+            })
+
+        return Response(data)
