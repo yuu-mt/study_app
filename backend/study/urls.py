@@ -10,6 +10,7 @@ from .views import (
     FriendRecordListView,
     FriendSummaryView,
     TotalSummaryView,
+    MonthlyChartView,
 )
 
 urlpatterns = [
@@ -27,5 +28,6 @@ urlpatterns = [
     path('records/<int:record_id>/stamp/', StampView.as_view(), name='stamp'),
     path('weekly-chart/', WeeklyChartView.as_view(), name='weekly_chart'),
     path('ranking/', WeeklyRankingView.as_view(), name='weekly_ranking'),
-    path('total-summary/', TotalSummaryView.as_view(), name='total_summary')
+    path('total-summary/', TotalSummaryView.as_view(), name='total_summary'),
+    path('monthly-chart/', MonthlyChartView.as_view(), name='monthly_chart'),
 ]

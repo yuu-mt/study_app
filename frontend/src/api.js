@@ -1,8 +1,9 @@
 import axios from 'axios'
 import router from './router/index.js'
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://monster-study-tracker.fly.dev/api'
 const api = axios.create({
-    baseURL: 'https://monster-study-tracker.fly.dev/api'
+    baseURL: BASE_URL
 })
 
 // リクエストインターセプター
@@ -30,7 +31,7 @@ api.interceptors.response.use(
 
             try{
                 const refreshToken = localStorage.getItem('refresh_token')
-                const res = await axios.post('https://monster-study-tracker.fly.dev/api/accounts/token/refresh/',  { refresh: refreshToken
+                const res = await axios.post(`${BASE_URL}/accounts/token/refresh/`,  { refresh: refreshToken
                 })
 
                 const newAccessToken = res.data.access
@@ -52,5 +53,5 @@ api.interceptors.response.use(
 
 export default api
 export const authApi = axios.create({
-    baseURL: 'https://monster-study-tracker.fly.dev/api',
+    baseURL: BASE_URL,
 })

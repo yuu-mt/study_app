@@ -9,6 +9,8 @@ import ForgotPassword from '../views/ForgotPassword.vue'
 import ResetPassword from '../views/ResetPassword.vue'
 import SelectMonster from '../views/SelectMonster.vue'
 import StudyTimer from '../views/StudyTimer.vue'
+import StudyLog from '../views/StudyLog.vue'
+import StudyReview from '../views/StudyReview.vue'
 
 
 const routes = [
@@ -23,6 +25,8 @@ const routes = [
     { path: '/reset-password', name: 'ResetPassword', component: ResetPassword, meta: { guest: true } },
     { path: '/select-monster', name: 'SelectMonster', component: SelectMonster, meta: { requiresAuth: true } },
     { path: '/timer', name: 'StudyTimer', component: StudyTimer, meta: { requiresAuth: true } },
+    { path: '/review', name: 'StudyReview', component: StudyReview, meta: { requiresAuth: true } },
+    { path: '/study-log', name: 'StudyLog', component: StudyLog, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
