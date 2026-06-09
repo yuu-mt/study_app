@@ -516,8 +516,8 @@ const chartOptions = {
 }
 
 .chart-area {
-    flex: 1;
-    min-width: 0;
+    width: 340px;
+    min-width: 200px;
 }
 
 .chart-title {
@@ -529,16 +529,40 @@ const chartOptions = {
 
 .chart-wrap {
     height: 120px;
-    max-width: 400px;
 }
 
 .comparison-area {
-    width: 100px;
+    width: 140px;
     flex-shrink: 0;
     background: #f8faff;
     border-radius: 10px;
     padding: 10px;
     text-align: center;
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+@media (max-width: 480px) {
+    .chart-section {
+        flex-direction: column;
+    }
+
+    .chart-area {
+        width: 100%;
+        min-width: unset;
+        flex: unset;
+    }
+
+    .comparison-area {
+        width: 100%;
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-align: left;
+        padding: 8px 12px;
+        box-sizing: border-box;
+    }
 }
 
 .comp-title {
