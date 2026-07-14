@@ -8,6 +8,17 @@
         <div class="review-body">
             <p class="intro">お疲れ様でした！振り返りを記録しましょう。<br> (スキップして後で入力もできます)</p>
 
+            <!-- カテゴリーが「カリキュラム」の場合のみ章選択UIを表示（要件4-4） -->
+            <div class="form-group" v-if="isCurriculum">
+                <label>対象の章</label>
+                <select v-model="form.chapter">
+                <option value="">選択してください</option>
+                <option v-for="chapter in chapters" :key="chapter.id" :value="chapter.id">
+                    {{ chapter.chapter_number }}. {{ chapter.title }}
+                </option>
+                </select>
+            </div>
+
             <!-- 理解度 -->
             <div class="form-group">
                 <label>理解度</label>
@@ -52,6 +63,14 @@
                 <button class="btn-skip" @click="skip">スキップ</button>
                 <button class="btn-save" @click="save" :disabled="isSaving">{{ isSaving ? '保存中...' : '保存してホームへ' }}</button>
             </div>
+
+            <!-- 章の完了操作（要件3-2）：受講生自身の操作のみで完了が確定し、講師承認は不要 -->
+            <div v-if="isCurriculum" class="complete-section">
+                <button class="btn-complete-chapter" @click="completeChapter" :disabled="isSaving">
+                    {{ isSaving ? '処理中...' : '✓ この章を完了する' }}
+                </button>
+                <p class="complete-note">完了操作は取り消せません。振り返り内容も一緒に保存されます。</p>
+            </div>
         </div>
     </div>
 </template>
@@ -68,6 +87,8 @@ const recordId = ref(null)
 const studyTitle = ref('')
 const isSaving = ref(false)
 const errorMessage = ref('')
+const isCurriculum = ref(false)
+const chapters = ref([])
 
 const form = ref({
     understanding: 0,
@@ -75,13 +96,31 @@ const form = ref({
     struggles: '',
     achievements: '',
     solutions: '',
+    chapter: '',
 })
+
+const fetchChapters = async () => {
+    try {
+        const res = await api.get('/curriculum/chapters/options/')
+        chapters.value = res.data
+    } catch (error) {
+        console.error(error)
+    }
+}
 
 onMounted(() => {
     recordId.value = route.query.id
     studyTitle.value = route.query.title || '学習記録'
     if (!recordId.value){
         router.push('/home')
+        return
+    }
+    isCurriculum.value = route.query.curriculum === '1'
+    if (route.query.chapter) {
+        form.value.chapter = Number(route.query.chapter)
+    }
+    if (isCurriculum.value) {
+        fetchChapters()
     }
 })
 
@@ -99,6 +138,34 @@ const save = async () => {
         router.push('/home')
     } catch(error) {
         errorMessage.value = '保存に失敗しました'
+    } finally {
+        isSaving.value = false
+    }
+}
+
+// 章の完了操作。振り返り記録の保存と同時に、対象章を完了として記録する（要件3-2・4-4）
+const completeChapter = async () => {
+    errorMessage.value = ''
+    if (!form.value.chapter) {
+        errorMessage.value = '対象の章を選択してください'
+        return
+    }
+    if (!confirm('この章を完了として記録します。よろしいですか？（完了後の取消はできません）')) return
+
+    isSaving.value = true
+    try {
+        await api.patch(`/study/records/${recordId.value}/`, {
+            chapter: Number(form.value.chapter),
+            is_chapter_completion: true,
+            questions: form.value.questions,
+            struggles: form.value.struggles,
+            achievements: form.value.achievements,
+            solutions: form.value.solutions,
+            understanding: form.value.understanding || null,
+        })
+        router.push('/home')
+    } catch (error) {
+        errorMessage.value = '完了処理に失敗しました'
     } finally {
         isSaving.value = false
     }
@@ -244,6 +311,34 @@ const skip = () => {
 .btn-save:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+.complete-section {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-complete-chapter {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: #16a34a;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-complete-chapter:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.complete-note {
+    font-size: 12px;
+    color: #94a3b8;
+    margin: 8px 0 0;
 }
 
 @media (min-width: 720px) {

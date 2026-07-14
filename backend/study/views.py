@@ -30,7 +30,11 @@ class StudyRecordListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         record = serializer.save(user=self.request.user)
-        
+
+        # カリキュラム章の進捗（累計学習時間・完了状態）を管理アプリ側のデータへ反映する
+        from curriculum.services import sync_chapter_progress
+        sync_chapter_progress(record)
+
         from .slack import check_milestone, check_monster_evolution
         from django.db.models import Sum
         from django.utils import timezone
@@ -86,6 +90,10 @@ class StudyRecordDetailView(generics.RetrieveUpdateDestroyAPIView):
         ).aggregate(total=Sum('duration_minutes'))['total'] or 0
 
         serializer.save()
+
+        # カリキュラム章の進捗（累計学習時間・完了状態）を管理アプリ側のデータへ反映する
+        from curriculum.services import sync_chapter_progress
+        sync_chapter_progress(serializer.instance)
 
         # 更新後の累計
         new_total_all = StudyRecord.objects.filter(

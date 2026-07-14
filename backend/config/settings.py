@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     # 自分で作ったアプリ
     'accounts',
     'study',
+    'curriculum',
 ]
 
 MIDDLEWARE = [

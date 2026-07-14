@@ -34,6 +34,16 @@ class StudyRecord(models.Model):
         null=True,
         verbose_name='カテゴリー'
     )
+    # カテゴリーが「カリキュラム」の場合のみ入力される章選択（要件 4-3・4-4）。
+    # is_curriculum相当の判定は category.name == 'curriculum' で行うため、独立フラグは持たない。
+    chapter = models.ForeignKey(
+        'curriculum.CurriculumChapter',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='study_records',
+        verbose_name='対象章'
+    )
     title = models.CharField(max_length=200, verbose_name='学習タイトル')
     description = models.TextField(blank=True, verbose_name='学習詳細')
     study_date = models.DateField(verbose_name='学習日')
@@ -52,6 +62,10 @@ class StudyRecord(models.Model):
     struggles = models.TextField(blank=True, null=True, verbose_name='難しかったこと')
     achievements = models.TextField(blank=True, null=True, verbose_name='できるようになったこと')
     solutions = models.TextField(blank=True, null=True, verbose_name='解決に向けて行ったこと')
+
+    # 振り返り記録入力画面の「完了」ボタン押下を表すフラグ（要件 3-2・4-4）。
+    # True の場合、対応する ChapterProgress を完了済みとして記録する。
+    is_chapter_completion = models.BooleanField(default=False, verbose_name='章完了操作')
 
     class Meta:
         verbose_name = '学習記録'
