@@ -9,7 +9,8 @@ User = get_user_model()
 class CurriculumItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CurriculumItem
-        fields = ['id', 'item_number', 'title', 'order']
+        fields = ['id', 'chapter', 'item_number', 'title', 'order']
+        read_only_fields = ['chapter']
 
 
 class CurriculumChapterSerializer(serializers.ModelSerializer):

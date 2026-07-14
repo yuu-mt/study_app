@@ -5,6 +5,8 @@ from .views import (
     CurriculumChapterListCreateView,
     CurriculumChapterOptionsView,
     CurriculumChapterReorderView,
+    CurriculumItemDetailView,
+    CurriculumItemListCreateView,
     InstructorCandidateListView,
     InstructorRegisterView,
     MentorListView,
@@ -31,6 +33,9 @@ urlpatterns = [
     path('chapters/options/', CurriculumChapterOptionsView.as_view(), name='chapter_options'),
     # カリキュラム管理
     path('chapters/', CurriculumChapterListCreateView.as_view(), name='chapter_list'),
-    path('chapters/<int:pk>/', CurriculumChapterDetailView.as_view(), name='chapter_detail'),
     path('chapters/reorder/', CurriculumChapterReorderView.as_view(), name='chapter_reorder'),
+    path('chapters/<int:pk>/', CurriculumChapterDetailView.as_view(), name='chapter_detail'),
+    # カリキュラム小項目管理
+    path('chapters/<int:chapter_id>/items/', CurriculumItemListCreateView.as_view(), name='item_list'),
+    path('items/<int:pk>/', CurriculumItemDetailView.as_view(), name='item_detail'),
 ]

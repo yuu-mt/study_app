@@ -23,20 +23,71 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(chapter, index) in chapters" :key="chapter.id">
-                        <td class="reorder-cell" v-if="isAdmin">
-                            <button class="reorder-btn" :disabled="index === 0" @click="move(index, -1)" title="上へ">▲</button>
-                            <button class="reorder-btn" :disabled="index === chapters.length - 1" @click="move(index, 1)" title="下へ">▼</button>
-                        </td>
-                        <td v-else></td>
-                        <td>{{ chapter.chapter_number }}</td>
-                        <td>{{ chapter.title }}</td>
-                        <td>{{ chapter.estimated_days }}日</td>
-                        <td v-if="isAdmin" class="actions-cell">
-                            <button class="btn-link" @click="startEdit(chapter)">編集</button>
-                            <button class="btn-link danger" @click="deleteChapter(chapter)">削除</button>
-                        </td>
-                    </tr>
+                    <template v-for="(chapter, index) in chapters" :key="chapter.id">
+                        <tr>
+                            <td class="reorder-cell" v-if="isAdmin">
+                                <button class="reorder-btn" :disabled="index === 0" @click="move(index, -1)" title="上へ">▲</button>
+                                <button class="reorder-btn" :disabled="index === chapters.length - 1" @click="move(index, 1)" title="下へ">▼</button>
+                            </td>
+                            <td v-else></td>
+                            <td>{{ chapter.chapter_number }}</td>
+                            <td>
+                                <button class="chapter-title-btn" @click="toggleExpand(chapter)">
+                                    <span class="expand-caret" :class="{ open: expandedId === chapter.id }">▶</span>
+                                    {{ chapter.title }}
+                                    <span class="item-count">({{ chapter.items.length }}項目)</span>
+                                </button>
+                            </td>
+                            <td>{{ chapter.estimated_days }}日</td>
+                            <td v-if="isAdmin" class="actions-cell">
+                                <button class="btn-link" @click="startEdit(chapter)">編集</button>
+                                <button class="btn-link danger" @click="deleteChapter(chapter)">削除</button>
+                            </td>
+                        </tr>
+                        <tr v-if="expandedId === chapter.id" class="items-row">
+                            <td :colspan="isAdmin ? 5 : 4">
+                                <div class="items-panel">
+                                    <table class="items-table" v-if="chapter.items.length > 0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:100px">項目番号</th>
+                                                <th>項目名</th>
+                                                <th v-if="isAdmin" style="width:120px"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="item in chapter.items" :key="item.id">
+                                                <template v-if="editingItem?.id === item.id">
+                                                    <td><input v-model="itemForm.item_number" class="item-input small" /></td>
+                                                    <td><input v-model="itemForm.title" class="item-input" /></td>
+                                                    <td class="actions-cell">
+                                                        <button class="btn-link" @click="submitItemEdit">保存</button>
+                                                        <button class="btn-link" @click="cancelItemEdit">取消</button>
+                                                    </td>
+                                                </template>
+                                                <template v-else>
+                                                    <td>{{ item.item_number }}</td>
+                                                    <td>{{ item.title }}</td>
+                                                    <td v-if="isAdmin" class="actions-cell">
+                                                        <button class="btn-link" @click="startItemEdit(item)">編集</button>
+                                                        <button class="btn-link danger" @click="deleteItem(chapter, item)">削除</button>
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <p v-else class="empty-note">この章にはまだ小項目が登録されていません</p>
+
+                                    <div v-if="isAdmin" class="add-item-row">
+                                        <input v-model="newItemForm.item_number" class="item-input small" placeholder="項目番号" />
+                                        <input v-model="newItemForm.title" class="item-input" placeholder="項目名を入力" />
+                                        <button class="btn-secondary" @click="addItem(chapter)">小項目を追加</button>
+                                    </div>
+                                    <div v-if="itemError" class="error-message">{{ itemError }}</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
             <p class="total-note">全{{ chapters.length }}章・想定日数合計 {{ totalDays }}日</p>
@@ -85,6 +136,81 @@ const editingChapter = ref(null)
 const form = ref({ chapter_number: '', title: '', estimated_days: 0 })
 const formError = ref('')
 const isSaving = ref(false)
+
+// 小項目（curriculum_item）の展開表示・編集
+const expandedId = ref(null)
+const editingItem = ref(null)
+const itemForm = ref({ item_number: '', title: '' })
+const newItemForm = ref({ item_number: '', title: '' })
+const itemError = ref('')
+
+const toggleExpand = (chapter) => {
+    expandedId.value = expandedId.value === chapter.id ? null : chapter.id
+    editingItem.value = null
+    itemError.value = ''
+    newItemForm.value = { item_number: '', title: '' }
+}
+
+const startItemEdit = (item) => {
+    editingItem.value = item
+    itemForm.value = { item_number: item.item_number, title: item.title }
+    itemError.value = ''
+}
+
+const cancelItemEdit = () => {
+    editingItem.value = null
+    itemError.value = ''
+}
+
+const submitItemEdit = async () => {
+    if (!itemForm.value.item_number || !itemForm.value.title) {
+        itemError.value = '項目番号と項目名を入力してください'
+        return
+    }
+    try {
+        await api.patch(`/curriculum/items/${editingItem.value.id}/`, {
+            item_number: itemForm.value.item_number,
+            title: itemForm.value.title,
+        })
+        editingItem.value = null
+        itemError.value = ''
+        await fetchChapters()
+    } catch (error) {
+        itemError.value = '小項目の更新に失敗しました'
+    }
+}
+
+const addItem = async (chapter) => {
+    itemError.value = ''
+    if (!newItemForm.value.item_number || !newItemForm.value.title) {
+        itemError.value = '項目番号と項目名を入力してください'
+        return
+    }
+    try {
+        const nextOrder = chapter.items.length > 0
+            ? Math.max(...chapter.items.map(i => i.order)) + 1
+            : 0
+        await api.post(`/curriculum/chapters/${chapter.id}/items/`, {
+            item_number: newItemForm.value.item_number,
+            title: newItemForm.value.title,
+            order: nextOrder,
+        })
+        newItemForm.value = { item_number: '', title: '' }
+        await fetchChapters()
+    } catch (error) {
+        itemError.value = error.response?.data?.non_field_errors?.[0] || '小項目の追加に失敗しました'
+    }
+}
+
+const deleteItem = async (chapter, item) => {
+    if (!confirm(`小項目「${item.item_number}. ${item.title}」を削除しますか？`)) return
+    try {
+        await api.delete(`/curriculum/items/${item.id}/`)
+        await fetchChapters()
+    } catch (error) {
+        alert('削除に失敗しました')
+    }
+}
 
 const totalDays = computed(() => chapters.value.reduce((sum, c) => sum + c.estimated_days, 0))
 
@@ -156,6 +282,7 @@ const deleteChapter = async (chapter) => {
     if (!confirm(`「${chapter.chapter_number}. ${chapter.title}」を削除しますか？`)) return
     try {
         await api.delete(`/curriculum/chapters/${chapter.id}/`)
+        if (expandedId.value === chapter.id) expandedId.value = null
         await fetchChapters()
     } catch (error) {
         alert(error.response?.data?.error || '削除に失敗しました（進捗記録が存在する章は削除できません）')
@@ -248,6 +375,102 @@ onMounted(fetchChapters)
 .reorder-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+.chapter-title-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    color: #1e293b;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.expand-caret {
+    font-size: 9px;
+    color: #94a3b8;
+    transition: transform 0.15s;
+    display: inline-block;
+}
+
+.expand-caret.open {
+    transform: rotate(90deg);
+}
+
+.item-count {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.items-row td {
+    background: #f8faff;
+    padding: 16px 16px 16px 44px;
+}
+
+.items-panel {
+    max-width: 640px;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 12px;
+}
+
+.items-table th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.items-table td {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.items-table tr:last-child td {
+    border-bottom: none;
+}
+
+.item-input {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1.5px solid #e2e8f0;
+    font-size: 13px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.item-input.small {
+    width: 90px;
+}
+
+.add-item-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.add-item-row .item-input.small {
+    flex: 0 0 90px;
+}
+
+.add-item-row .item-input:not(.small) {
+    flex: 1;
 }
 
 .actions-cell {

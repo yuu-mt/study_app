@@ -4,12 +4,13 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import ChapterProgress, CurriculumChapter, TraineeProfile
+from .models import ChapterProgress, CurriculumChapter, CurriculumItem, TraineeProfile
 from .permissions import IsAdminOrReadOnlyForInstructor, IsAdminRole, IsInstructorOrAdmin
 from .serializers import (
     ChapterReorderSerializer,
     CurriculumChapterOptionSerializer,
     CurriculumChapterSerializer,
+    CurriculumItemSerializer,
     InstructorRegisterSerializer,
     TraineeDetailSerializer,
     TraineeListSerializer,
@@ -210,3 +211,28 @@ class CurriculumChapterReorderView(APIView):
 
         chapters = CurriculumChapter.objects.prefetch_related('items').order_by('order')
         return Response(CurriculumChapterSerializer(chapters, many=True).data)
+
+
+# ---------------------------------------------------------------------------
+# カリキュラム小項目管理（要件3-3・v3.3追加）：章と同様、instructorは閲覧のみ
+# ---------------------------------------------------------------------------
+
+class CurriculumItemListCreateView(generics.ListCreateAPIView):
+    """指定した章に紐づく小項目の一覧取得・新規追加API"""
+    serializer_class = CurriculumItemSerializer
+    permission_classes = [IsAdminOrReadOnlyForInstructor]
+    pagination_class = None
+
+    def get_queryset(self):
+        return CurriculumItem.objects.filter(chapter_id=self.kwargs['chapter_id']).order_by('order')
+
+    def perform_create(self, serializer):
+        chapter = generics.get_object_or_404(CurriculumChapter, id=self.kwargs['chapter_id'])
+        serializer.save(chapter=chapter)
+
+
+class CurriculumItemDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """小項目の編集・削除API"""
+    queryset = CurriculumItem.objects.all()
+    serializer_class = CurriculumItemSerializer
+    permission_classes = [IsAdminOrReadOnlyForInstructor]
