@@ -119,13 +119,15 @@ class TraineeDetailSerializer(TraineeListSerializer):
 
         records = (
             StudyRecord.objects.filter(user=obj.user, category__name='curriculum')
-            .select_related('chapter')
+            .select_related('chapter', 'item')
             .order_by('-study_date')
         )
         return [
             {
                 'chapter': record.chapter.chapter_number if record.chapter else None,
                 'chapter_title': record.chapter.title if record.chapter else None,
+                'item': record.item.item_number if record.item else None,
+                'item_title': record.item.title if record.item else None,
                 'study_date': record.study_date,
                 'questions': record.questions,
                 'struggles': record.struggles,

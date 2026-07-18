@@ -37,7 +37,16 @@
                     </thead>
                     <tbody>
                         <tr v-for="progress in trainee.chapter_progresses" :key="progress.id">
-                            <td>{{ progress.chapter_number }}. {{ progress.chapter_title }}</td>
+                            <td>
+                                <button
+                                    class="chapter-link"
+                                    :class="{ active: selectedChapter === progress.chapter_number }"
+                                    @click="toggleChapterFilter(progress.chapter_number)"
+                                    title="この章の振り返り記録だけを表示"
+                                >
+                                    {{ progress.chapter_number }}. {{ progress.chapter_title }}
+                                </button>
+                            </td>
                             <td>
                                 <span class="progress-badge" :class="progress.is_completed ? 'done' : 'pending'">
                                     {{ progress.is_completed ? '完了' : '未完了' }}
@@ -54,12 +63,21 @@
             </section>
 
             <section class="section">
-                <h2>振り返り記録</h2>
-                <div v-if="trainee.reflections.length === 0" class="empty-cell">振り返り記録がまだありません</div>
+                <div class="section-head">
+                    <h2>振り返り記録</h2>
+                    <span v-if="selectedChapter" class="filter-note">
+                        「{{ selectedChapter }}章」のみ表示中
+                        <button class="clear-filter" @click="selectedChapter = null">すべて表示</button>
+                    </span>
+                </div>
+                <div v-if="filteredReflections.length === 0" class="empty-cell">
+                    {{ selectedChapter ? 'この章の振り返り記録はまだありません' : '振り返り記録がまだありません' }}
+                </div>
                 <div v-else class="reflection-list">
-                    <div class="reflection-card" v-for="(r, idx) in trainee.reflections" :key="idx">
+                    <div class="reflection-card" v-for="(r, idx) in filteredReflections" :key="idx">
                         <div class="reflection-head">
                             <span class="reflection-chapter" v-if="r.chapter">{{ r.chapter }}. {{ r.chapter_title }}</span>
+                            <span class="reflection-item" v-if="r.item">{{ r.item }}. {{ r.item_title }}</span>
                             <span class="reflection-date">{{ r.study_date }}</span>
                             <span v-if="r.understanding" class="reflection-stars">{{ '★'.repeat(r.understanding) }}{{ '☆'.repeat(5 - r.understanding) }}</span>
                         </div>
@@ -77,7 +95,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../../api.js'
 import { statusLabel, formatMinutes } from '../utils.js'
@@ -86,6 +104,19 @@ const route = useRoute()
 const trainee = ref(null)
 const isLoading = ref(true)
 const loadError = ref(false)
+
+// 章別の進捗テーブルで章名をクリックすると、その章の振り返り記録だけに絞り込む
+const selectedChapter = ref(null)
+
+const toggleChapterFilter = (chapterNumber) => {
+    selectedChapter.value = selectedChapter.value === chapterNumber ? null : chapterNumber
+}
+
+const filteredReflections = computed(() => {
+    if (!trainee.value) return []
+    if (!selectedChapter.value) return trainee.value.reflections
+    return trainee.value.reflections.filter(r => r.chapter === selectedChapter.value)
+})
 
 const formatDateTime = (value) => {
     if (!value) return '—'
@@ -194,6 +225,60 @@ onMounted(fetchTrainee)
     margin: 0 0 12px;
 }
 
+.section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.section-head h2 {
+    margin: 0;
+}
+
+.filter-note {
+    font-size: 12px;
+    color: #2563eb;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clear-filter {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+}
+
+.chapter-link {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    margin: -4px -8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    text-align: left;
+}
+
+.chapter-link:hover {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.chapter-link.active {
+    background: #2563eb;
+    color: white;
+}
+
 .progress-table {
     width: 100%;
     border-collapse: collapse;
@@ -256,11 +341,20 @@ onMounted(fetchTrainee)
     gap: 10px;
     margin-bottom: 10px;
     font-size: 12px;
+    flex-wrap: wrap;
 }
 
 .reflection-chapter {
     background: #eff6ff;
     color: #2563eb;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.reflection-item {
+    background: #f5f3ff;
+    color: #7c3aed;
     font-weight: 700;
     padding: 2px 8px;
     border-radius: 8px;
