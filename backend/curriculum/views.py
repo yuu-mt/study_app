@@ -28,8 +28,10 @@ User = get_user_model()
 # ---------------------------------------------------------------------------
 
 class CurriculumChapterOptionsView(generics.ListAPIView):
-    """章選択の選択肢一覧（表示順）。受講生自身が学習タイマー・振り返り画面で使用する。"""
-    queryset = CurriculumChapter.objects.order_by('order')
+    """章選択の選択肢一覧（表示順）。受講生自身が学習タイマー・振り返り画面で使用する。
+    各章に紐づく小項目もあわせて返す。
+    """
+    queryset = CurriculumChapter.objects.prefetch_related('items').order_by('order')
     serializer_class = CurriculumChapterOptionSerializer
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = None

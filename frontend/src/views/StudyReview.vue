@@ -19,6 +19,17 @@
                 </select>
             </div>
 
+            <!-- 選択した章に小項目がある場合のみ小項目選択UIを表示 -->
+            <div class="form-group" v-if="isCurriculum && selectedChapterItems.length > 0">
+                <label>対象の小項目（任意）</label>
+                <select v-model="form.item">
+                <option value="">選択してください</option>
+                <option v-for="item in selectedChapterItems" :key="item.id" :value="item.id">
+                    {{ item.item_number }}. {{ item.title }}
+                </option>
+                </select>
+            </div>
+
             <!-- 理解度 -->
             <div class="form-group">
                 <label>理解度</label>
@@ -76,7 +87,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import api from '../api.js'
 
@@ -97,6 +108,19 @@ const form = ref({
     achievements: '',
     solutions: '',
     chapter: '',
+    item: '',
+})
+
+const selectedChapterItems = computed(() => {
+    const chapter = chapters.value.find(c => c.id === form.value.chapter)
+    return chapter?.items ?? []
+})
+
+// 章を変更したら、以前選択していた小項目は無効になるためリセットする
+watch(() => form.value.chapter, (newVal, oldVal) => {
+    if (oldVal !== undefined && newVal !== oldVal) {
+        form.value.item = ''
+    }
 })
 
 const fetchChapters = async () => {
@@ -119,6 +143,9 @@ onMounted(() => {
     if (route.query.chapter) {
         form.value.chapter = Number(route.query.chapter)
     }
+    if (route.query.item) {
+        form.value.item = Number(route.query.item)
+    }
     if (isCurriculum.value) {
         fetchChapters()
     }
@@ -129,6 +156,7 @@ const save = async () => {
     errorMessage.value = ''
     try{
         await api.patch(`/study/records/${recordId.value}/`,{
+            item: form.value.item ? Number(form.value.item) : null,
             questions: form.value.questions,
             struggles: form.value.struggles,
             achievements: form.value.achievements,
@@ -156,6 +184,7 @@ const completeChapter = async () => {
     try {
         await api.patch(`/study/records/${recordId.value}/`, {
             chapter: Number(form.value.chapter),
+            item: form.value.item ? Number(form.value.item) : null,
             is_chapter_completion: true,
             questions: form.value.questions,
             struggles: form.value.struggles,

@@ -24,7 +24,7 @@ class StudyRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyRecord
         fields = [
-            'id', 'user', 'username', 'category', 'category_name', 'chapter', 'is_chapter_completion',
+            'id', 'user', 'username', 'category', 'category_name', 'chapter', 'item', 'is_chapter_completion',
             'title', 'description', 'study_date', 'duration_minutes',
             'duration_display', 'stamp_count','my_stamp','created_at','understanding','questions', 'struggles', 'achievements', 'solutions',
         ]

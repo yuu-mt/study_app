@@ -30,6 +30,17 @@
             </select>
         </div>
 
+        <!-- 選択した章に小項目がある場合のみ小項目選択UIを表示 -->
+        <div class="form-group" v-if="isCurriculumCategory && selectedChapterItems.length > 0">
+            <label>対象の小項目（任意）</label>
+            <select v-model="form.item">
+            <option value="">選択してください</option>
+            <option v-for="item in selectedChapterItems" :key="item.id" :value="item.id">
+                {{ item.item_number }}. {{ item.title }}
+            </option>
+            </select>
+        </div>
+
         <div class="form-group">
             <label>学習タイトル</label>
             <input v-model="form.title" type="text" placeholder="例：Python基礎勉強" />
@@ -52,6 +63,7 @@
         <div class="study-info">
             <div class="study-category">{{ categoryName }}</div>
             <div v-if="chapterName" class="study-chapter">{{ chapterName }}</div>
+            <div v-if="itemName" class="study-item">{{ itemName }}</div>
             <div class="study-title">{{ form.title }}</div>
             <div v-if="form.description" class="study-desc">{{ form.description }}</div>
         </div>
@@ -84,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api.js'
 
@@ -101,6 +113,7 @@ const categoryLabels = {
 const form = ref({
     category: '',
     chapter: '',
+    item: '',
     title: '',
     description: '',
 })
@@ -144,6 +157,22 @@ const chapterName = computed(() => {
     if (!isCurriculumCategory.value) return ''
     const chapter = chapters.value.find(c => c.id === form.value.chapter)
     return chapter ? `${chapter.chapter_number}. ${chapter.title}` : ''
+})
+
+// 選択した章に紐づく小項目の選択肢（要件：小項目も選択できるようにする）
+const selectedChapterItems = computed(() => {
+    const chapter = chapters.value.find(c => c.id === form.value.chapter)
+    return chapter?.items ?? []
+})
+
+const itemName = computed(() => {
+    const item = selectedChapterItems.value.find(i => i.id === form.value.item)
+    return item ? `${item.item_number}. ${item.title}` : ''
+})
+
+// 章を変更したら、以前選択していた小項目は無効になるためリセットする
+watch(() => form.value.chapter, () => {
+    form.value.item = ''
 })
 
 const getCategoryLabel = (category) => {
@@ -210,6 +239,7 @@ const completeTimer = async () => {
         const response = await api.post('/study/records/', {
         category: Number(form.value.category),
         chapter: isCurriculumCategory.value && form.value.chapter ? Number(form.value.chapter) : null,
+        item: isCurriculumCategory.value && form.value.item ? Number(form.value.item) : null,
         title: form.value.title,
         description: form.value.description,
         study_date: today,
@@ -222,6 +252,7 @@ const completeTimer = async () => {
         if (isCurriculumCategory.value) {
             query.set('curriculum', '1')
             if (form.value.chapter) query.set('chapter', form.value.chapter)
+            if (form.value.item) query.set('item', form.value.item)
         }
         router.push(`/review?${query.toString()}`)
     } catch (error) {
@@ -372,6 +403,13 @@ fetchChapters()
     font-size: 12px;
     color: #7c3aed;
     font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.study-item {
+    font-size: 11px;
+    color: #9333ea;
+    font-weight: 500;
     margin-bottom: 4px;
 }
 

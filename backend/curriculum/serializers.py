@@ -37,12 +37,23 @@ class CurriculumChapterSerializer(serializers.ModelSerializer):
         return instance
 
 
+class CurriculumItemOptionSerializer(serializers.ModelSerializer):
+    """受講生側の小項目選択UI用"""
+
+    class Meta:
+        model = CurriculumItem
+        fields = ['id', 'item_number', 'title', 'order']
+
+
 class CurriculumChapterOptionSerializer(serializers.ModelSerializer):
-    """受講生側の章選択UI用（要件4-3・4-4）。全認証済みユーザーが閲覧可能。"""
+    """受講生側の章選択UI用（要件4-3・4-4）。全認証済みユーザーが閲覧可能。
+    選択した章に対応する小項目も併せて選べるよう、items をネストして返す。
+    """
+    items = CurriculumItemOptionSerializer(many=True, read_only=True)
 
     class Meta:
         model = CurriculumChapter
-        fields = ['id', 'chapter_number', 'title', 'order']
+        fields = ['id', 'chapter_number', 'title', 'order', 'items']
 
 
 class ChapterReorderSerializer(serializers.Serializer):

@@ -44,6 +44,15 @@ class StudyRecord(models.Model):
         related_name='study_records',
         verbose_name='対象章'
     )
+    # 対象章に紐づく小項目（curriculum_item）の選択。任意項目（章によっては小項目が無い場合もあるため）。
+    item = models.ForeignKey(
+        'curriculum.CurriculumItem',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='study_records',
+        verbose_name='対象小項目'
+    )
     title = models.CharField(max_length=200, verbose_name='学習タイトル')
     description = models.TextField(blank=True, verbose_name='学習詳細')
     study_date = models.DateField(verbose_name='学習日')
