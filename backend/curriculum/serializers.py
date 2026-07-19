@@ -151,11 +151,18 @@ class TraineeRegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError('ユーザーが見つかりません')
         if hasattr(user, 'trainee_profile'):
             raise serializers.ValidationError('既に受講生として登録されています')
+        if user.role in ('instructor', 'admin'):
+            raise serializers.ValidationError('講師・管理者ロールを持つユーザーは受講生として登録できません')
         return value
 
     def validate_mentor_id(self, value):
-        if value and not User.objects.filter(id=value).exists():
+        if not value:
+            return value
+        mentor = User.objects.filter(id=value).first()
+        if not mentor:
             raise serializers.ValidationError('担当メンバーが見つかりません')
+        if mentor.role not in ('instructor', 'admin'):
+            raise serializers.ValidationError('担当メンバーは講師または管理者ロールのユーザーのみ指定できます')
         return value
 
     def create(self, validated_data):
@@ -202,8 +209,12 @@ class InstructorRegisterSerializer(serializers.Serializer):
     user_id = serializers.IntegerField()
 
     def validate_user_id(self, value):
-        if not User.objects.filter(id=value).exists():
+        try:
+            user = User.objects.get(id=value)
+        except User.DoesNotExist:
             raise serializers.ValidationError('ユーザーが見つかりません')
+        if hasattr(user, 'trainee_profile'):
+            raise serializers.ValidationError('既に受講生として登録されているユーザーは講師にできません')
         return value
 
     def save(self, **kwargs):
