@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'config.demo_auth.DemoBasicAuthMiddleware',  # クライアントへのデモ公開時のみ有効（env未設定なら素通り）
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # CORSはここに追加
@@ -42,6 +43,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# クライアントへのデモ公開時など、一時的にAPI全体へBasic認証をかけたい場合に設定する。
+# 両方設定された場合のみ有効。フロントエンド(Vercel)側の環境変数と同じ値を設定すること。
+DEMO_AUTH_USER = os.environ.get('DEMO_AUTH_USER')
+DEMO_AUTH_PASSWORD = os.environ.get('DEMO_AUTH_PASSWORD')
 
 ROOT_URLCONF = 'config.urls'
 
@@ -113,7 +119,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # WhiteNoise
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+MIDDLEWARE.insert(2, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
