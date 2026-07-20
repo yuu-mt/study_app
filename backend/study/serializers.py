@@ -24,7 +24,8 @@ class StudyRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudyRecord
         fields = [
-            'id', 'user', 'username', 'category', 'category_name','title', 'description', 'study_date', 'duration_minutes',
+            'id', 'user', 'username', 'category', 'category_name', 'chapter', 'item', 'is_chapter_completion',
+            'title', 'description', 'study_date', 'duration_minutes',
             'duration_display', 'stamp_count','my_stamp','created_at','understanding','questions', 'struggles', 'achievements', 'solutions',
         ]
         read_only_fields = ['user', 'created_at']

@@ -21,6 +21,12 @@ class UserManager(BaseUserManager):
   
 
 class User(AbstractBaseUser, PermissionsMixin):
+  ROLE_CHOICES = [
+      ('trainee', '受講生'),
+      ('instructor', '講師'),
+      ('admin', '管理者'),
+  ]
+
   email = models.EmailField(unique=True, verbose_name='メールアドレス')
   username = models.CharField(max_length=50, verbose_name='ユーザー名')
   avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
@@ -28,6 +34,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
   is_active = models.BooleanField(default=True)
   is_staff = models.BooleanField(default=False)
+
+  # 管理アプリ用ロール。既存ユーザーは未設定（空）のままとし、管理画面から個別に付与する。
+  # instructor は adminアカウントのみが付与可能（要件定義 3-1-b, 5-2 参照）。
+  role = models.CharField(
+      max_length=20,
+      choices=ROLE_CHOICES,
+      blank=True,
+      default='',
+      verbose_name='役割'
+  )
 
   monster_type = models.CharField(
         max_length=20,

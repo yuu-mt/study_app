@@ -19,6 +19,28 @@
             </select>
         </div>
 
+        <!-- カテゴリーが「カリキュラム」の場合のみ章選択UIを表示（要件4-3） -->
+        <div class="form-group" v-if="isCurriculumCategory">
+            <label>対象の章</label>
+            <select v-model="form.chapter">
+            <option value="">選択してください</option>
+            <option v-for="chapter in chapters" :key="chapter.id" :value="chapter.id">
+                {{ chapter.chapter_number }}. {{ chapter.title }}
+            </option>
+            </select>
+        </div>
+
+        <!-- 選択した章に小項目がある場合のみ小項目選択UIを表示 -->
+        <div class="form-group" v-if="isCurriculumCategory && selectedChapterItems.length > 0">
+            <label>対象の小項目（任意）</label>
+            <select v-model="form.item">
+            <option value="">選択してください</option>
+            <option v-for="item in selectedChapterItems" :key="item.id" :value="item.id">
+                {{ item.item_number }}. {{ item.title }}
+            </option>
+            </select>
+        </div>
+
         <div class="form-group">
             <label>学習タイトル</label>
             <input v-model="form.title" type="text" placeholder="例：Python基礎勉強" />
@@ -40,6 +62,8 @@
         <div v-else class="timer-section">
         <div class="study-info">
             <div class="study-category">{{ categoryName }}</div>
+            <div v-if="chapterName" class="study-chapter">{{ chapterName }}</div>
+            <div v-if="itemName" class="study-item">{{ itemName }}</div>
             <div class="study-title">{{ form.title }}</div>
             <div v-if="form.description" class="study-desc">{{ form.description }}</div>
         </div>
@@ -72,13 +96,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../api.js'
 
 const router = useRouter()
 
 const categories = ref([])
+const chapters = ref([])
 const categoryLabels = {
     tech: '技術',
     culture: '教養',
@@ -87,6 +112,8 @@ const categoryLabels = {
 }
 const form = ref({
     category: '',
+    chapter: '',
+    item: '',
     title: '',
     description: '',
 })
@@ -109,9 +136,43 @@ const fetchCategories = async () => {
     }
 }
 
+// 章選択の選択肢（カリキュラムマスタ、表示順）。カテゴリーが「カリキュラム」の場合のみ使用（要件4-3）
+const fetchChapters = async () => {
+    try {
+        const res = await api.get('/curriculum/chapters/options/')
+        chapters.value = res.data
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const selectedCategory = computed(() => categories.value.find(c => c.id === form.value.category))
+const isCurriculumCategory = computed(() => selectedCategory.value?.name === 'curriculum')
+
 const categoryName = computed(() => {
-    const cat = categories.value.find(c => c.id === form.value.category)
-    return cat ? getCategoryLabel(cat) : ''
+    return selectedCategory.value ? getCategoryLabel(selectedCategory.value) : ''
+})
+
+const chapterName = computed(() => {
+    if (!isCurriculumCategory.value) return ''
+    const chapter = chapters.value.find(c => c.id === form.value.chapter)
+    return chapter ? `${chapter.chapter_number}. ${chapter.title}` : ''
+})
+
+// 選択した章に紐づく小項目の選択肢（要件：小項目も選択できるようにする）
+const selectedChapterItems = computed(() => {
+    const chapter = chapters.value.find(c => c.id === form.value.chapter)
+    return chapter?.items ?? []
+})
+
+const itemName = computed(() => {
+    const item = selectedChapterItems.value.find(i => i.id === form.value.item)
+    return item ? `${item.item_number}. ${item.title}` : ''
+})
+
+// 章を変更したら、以前選択していた小項目は無効になるためリセットする
+watch(() => form.value.chapter, () => {
+    form.value.item = ''
 })
 
 const getCategoryLabel = (category) => {
@@ -132,6 +193,10 @@ const startTimer = () => {
     errorMessage.value = ''
     if (!form.value.category) {
         errorMessage.value = 'カテゴリーを選択してください'
+        return
+    }
+    if (isCurriculumCategory.value && !form.value.chapter) {
+        errorMessage.value = '対象の章を選択してください'
         return
     }
     if (!form.value.title) {
@@ -173,12 +238,23 @@ const completeTimer = async () => {
     try {
         const response = await api.post('/study/records/', {
         category: Number(form.value.category),
+        chapter: isCurriculumCategory.value && form.value.chapter ? Number(form.value.chapter) : null,
+        item: isCurriculumCategory.value && form.value.item ? Number(form.value.item) : null,
         title: form.value.title,
         description: form.value.description,
         study_date: today,
         duration_minutes: durationMinutes,
         })
-        router.push(`/review?id=${response.data.id}&title=${encodeURIComponent(form.value.title)}`)
+        const query = new URLSearchParams({
+            id: response.data.id,
+            title: form.value.title,
+        })
+        if (isCurriculumCategory.value) {
+            query.set('curriculum', '1')
+            if (form.value.chapter) query.set('chapter', form.value.chapter)
+            if (form.value.item) query.set('item', form.value.item)
+        }
+        router.push(`/review?${query.toString()}`)
     } catch (error) {
         console.error(error)
     }
@@ -200,6 +276,7 @@ onUnmounted(() => {
 })
 
 fetchCategories()
+fetchChapters()
 </script>
 
 <style scoped>
@@ -320,6 +397,20 @@ fetchCategories()
     border-radius: 10px;
     display: inline-block;
     margin-bottom: 6px;
+}
+
+.study-chapter {
+    font-size: 12px;
+    color: #7c3aed;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.study-item {
+    font-size: 11px;
+    color: #9333ea;
+    font-weight: 500;
+    margin-bottom: 4px;
 }
 
 .study-title {

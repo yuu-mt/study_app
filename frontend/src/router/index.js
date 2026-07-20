@@ -11,6 +11,12 @@ import SelectMonster from '../views/SelectMonster.vue'
 import StudyTimer from '../views/StudyTimer.vue'
 import StudyLog from '../views/StudyLog.vue'
 import StudyReview from '../views/StudyReview.vue'
+import AdminLayout from '../admin-dashboard/AdminLayout.vue'
+import AdminTraineeList from '../admin-dashboard/views/TraineeList.vue'
+import AdminProgressManagement from '../admin-dashboard/views/ProgressManagement.vue'
+import AdminTraineeDetail from '../admin-dashboard/views/TraineeDetail.vue'
+import AdminRegisterView from '../admin-dashboard/views/RegisterView.vue'
+import AdminCurriculumManagement from '../admin-dashboard/views/CurriculumManagement.vue'
 
 
 const routes = [
@@ -27,6 +33,19 @@ const routes = [
     { path: '/timer', name: 'StudyTimer', component: StudyTimer, meta: { requiresAuth: true } },
     { path: '/review', name: 'StudyReview', component: StudyReview, meta: { requiresAuth: true } },
     { path: '/study-log', name: 'StudyLog', component: StudyLog, meta: { requiresAuth: true } },
+    {
+        path: '/admin-dashboard',
+        component: AdminLayout,
+        meta: { requiresAuth: true },
+        children: [
+            { path: '', redirect: '/admin-dashboard/trainees' },
+            { path: 'trainees', name: 'AdminTraineeList', component: AdminTraineeList },
+            { path: 'progress', name: 'AdminProgressManagement', component: AdminProgressManagement },
+            { path: 'register', name: 'AdminRegisterView', component: AdminRegisterView },
+            { path: 'trainees/:id', name: 'AdminTraineeDetail', component: AdminTraineeDetail },
+            { path: 'curriculum', name: 'AdminCurriculumManagement', component: AdminCurriculumManagement },
+        ],
+    },
 ]
 
 const router = createRouter({

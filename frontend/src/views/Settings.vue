@@ -50,6 +50,12 @@
             </button>
         </div>
 
+        <!-- 管理画面（講師・管理者のみ表示） -->
+        <div class="section" v-if="role === 'instructor' || role === 'admin'">
+            <h3>管理画面</h3>
+            <button class="btn-primary" @click="router.push('/admin-dashboard')">管理画面を開く</button>
+        </div>
+
         <!-- ログアウト -->
         <div class="section">
             <button class="btn-logout" @click="logout">ログアウト</button>
@@ -66,6 +72,7 @@ const router = useRouter()
 
 const username = ref('')
 const email = ref('')
+const role = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
 const isLoading = ref(false)
@@ -80,6 +87,7 @@ const fetchProfile = async () => {
     const res = await api.get('/accounts/me/')
     username.value = res.data.username
     email.value = res.data.email
+    role.value = res.data.role
   } catch (error) {
     if (error.response?.status === 401) router.push('/login')
   }
